@@ -59,7 +59,7 @@ user3.greet_user()
 user3.describe_user()
 '''
 ########################################################################
-
+'''
 class Character():
 	#Creates a base framework for a game character.
 	
@@ -117,7 +117,7 @@ zachery.heal_self()
 print(zachery.hp_current)
 
 brawl(christian, zachery)
-
+'''
 ########################################################################
 
 		
