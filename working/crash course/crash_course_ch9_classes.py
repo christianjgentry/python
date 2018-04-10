@@ -7,6 +7,7 @@ class Restaurant():
 		#initilize name and food type attributes.
 		self.name = name
 		self.cuisine = cuisine
+		self.number_served = 0
 		
 	def describe_restaurant(self):
 		#gives name of restaurant and the type of food they serve.
@@ -16,25 +17,35 @@ class Restaurant():
 	def is_open(self):
 		#opens the restaurant.
 		print(self.name, "is now open!")
+	
+	def increment_number_served(self, customers):
+		#adds customers to total number served.
+		if customers > 0:
+			self.number_served = self.number_served + customers
+		else:
+			print("You cannot enter a negative number of customers!")
 
 foodplace1 = Restaurant("Taco Bell", "Tex-Mex")
 foodplace2 = Restaurant("Olive Garden", "Italian")
 foodplace3 = Restaurant("Texas Road House", "Texan")
 
-foodplace1.describe_restaurant()
-foodplace1.is_open()
-foodplace2.describe_restaurant()
-foodplace2.is_open()
-foodplace3.describe_restaurant()
-foodplace3.is_open()
+restaurant = Restaurant("christian's grill", "bbq")
+
+print(restaurant.number_served)
+restaurant.number_served = 74
+print(restaurant.number_served)
+
+restaurant.increment_number_served(39)
+print(restaurant.number_served)
 '''
 ########################################################################
-'''
+
 class User():
 	def __init__(self, first_name, last_name):
 		#creates a basic instance of a user.
 		self.first_name = first_name
 		self.last_name = last_name
+		self.login_attempts = 0
 	
 	def describe_user(self):
 		#describes the modeled user instance.
@@ -44,6 +55,18 @@ class User():
 	def greet_user(self):
 		#greets the user.
 		print("Greetings,", self.first_name.title() + "!")
+		
+	def increment_login_attempts(self):
+		self.login_attempts += 1
+		print(self.first_name.title() + ":\n" + 
+			"Login Attempts:", self.login_attempts)
+		
+	def reset_login_attempts(self):
+		self.login_attempts = 0
+		print("Login Attempts Reset!\n" + 
+			self.first_name.title() + ":\n" + 
+			"Login Attempts:", self.login_attempts)
+		
 		
 user1 = User("christian", "gentry")
 user2 = User("zachery", "gentry")
@@ -57,7 +80,13 @@ user2.describe_user()
 
 user3.greet_user()
 user3.describe_user()
-'''
+
+user1.increment_login_attempts()
+user1.increment_login_attempts()
+user1.increment_login_attempts()
+user1.reset_login_attempts()
+
+
 ########################################################################
 '''
 class Character():
