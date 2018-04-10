@@ -1,0 +1,13 @@
+dictionary_1 = {
+	"name" : "Christian",
+	"age" : 23,
+	}
+	
+print(dictionary_1)
+
+
+
+
+
+for key, value in dictionary_1.items():
+	print(key +": ", value)
