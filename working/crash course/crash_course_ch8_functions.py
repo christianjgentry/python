@@ -236,6 +236,11 @@ car1 = car_info("toyota", "corolla",
 				current_owner = "christian gentry",
 				plate_number = "cr8m158") 
 print(car1)
+
+import module1 as m1
+
+print(m1.area(3,4))
+
 	
 
 
