@@ -13,9 +13,9 @@ print(alien_0)
 
 for item in alien_0:
 	print(item)
-
+'''
 ########################################################################
-
+'''
 person_1 = {
 	"first" : "chantel",
 	"last" : "garcia",
@@ -41,20 +41,21 @@ favorite_numbers = {
 print(favorite_numbers)
 
 print("Mocha's favorite number is", favorite_numbers["mocha"] + ".")
-
+'''
 ########################################################################
+from collections import OrderedDict
 
-programming_dictionary = {
-	"variable:" : " a container that holds value.",
-	"dictionary:" : " a type of list that contains keys and values.",
-	"concatenation:" : " the chaining of strings together using the + symbol.",
-	"string:" : " an array of characters that are stored as text",
-	"list:" : " a collection of elements",
-	"set()" : "runs through list of values but only stores unique values.",
-	"float" : "number values with decimal places",
-	"integer" : "number values with no decimal places.",
-	"while loop" : "loop that runs until either broken or until the value is no longer true."
-	}
+programming_dictionary = OrderedDict()
+
+programming_dictionary["variable:"] = " a container that holds value."
+programming_dictionary["dictionary:"] = " a type of list that contains keys and values."
+programming_dictionary["concatenation:"] = " the chaining of strings together using the + symbol."
+programming_dictionary["string:"] = " an array of characters that are stored as text"
+programming_dictionary["list:"] = " a collection of elements"
+programming_dictionary["set()"] = "runs through list of values but only stores unique values."
+programming_dictionary["float"] = "number values with decimal places"
+programming_dictionary["integer"] = "number values with no decimal places."
+programming_dictionary["while loop"] = "loop that runs until either broken or until the value is no longer true."
 
 for key, value in programming_dictionary.items():
 	print("Key: " + key + "\nValue: " + value + "\n")
@@ -76,7 +77,7 @@ for value in rivers.values():
 	print(value)
 
 ########################################################################
-
+'''
 favorite_languages = {
 	"christian" : "python",
 	"zachery" : "c#",
@@ -105,7 +106,7 @@ for name, language in favorite_languages.items():
 		print(name, ". You still need to take the survey!")
 	elif len(language) > 0:
 		print(name, ". Thank you for taking my survey!")
-		
+'''	
 ########################################################################
 '''
 
@@ -132,9 +133,9 @@ names = {
 
 for name, info in names.items():
 	print("This is", info["first"], info["last"] +".\n" + info["first"], "lives in", info["city"])
-	
+'''
 ########################################################################
-
+'''
 pets = {
 
 "mocha" : {
@@ -158,7 +159,8 @@ print(pets)
 
 for pet, pet_info in pets.items():
 	print(pet, "belongs to", pet_info["owner"] + ".\n" + pet, "is a", pet_info["species"] + ".")
-
+'''
+########################################################################
 
 
 

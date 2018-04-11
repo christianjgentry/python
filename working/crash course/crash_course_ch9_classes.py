@@ -198,26 +198,31 @@ def brawl(character_1, character_2):
 		if character_2.hp_current <= 0:
 			print(character_1.name.title(), "wins the brawl!")
 			break
-
-
-christian = Character("christian", atk=16)
-zachery = Character("zachery", hp=100)
-
-print(zachery.hp_current)
-christian.atk_basic(zachery)
-christian.atk_basic(zachery)
-christian.atk_basic(zachery)
-christian.atk_basic(zachery)
-print(zachery.hp_current)
-
-zachery.heal_self()
-zachery.heal_self()
-zachery.heal_self()
-
-print(zachery.hp_current)
-
-brawl(christian, zachery)
 '''
+########################################################################
+
+import rpg as r
+
+christian = r.Character("christian", atk=16)
+zachery = r.Character("zachery", hp=100)
+
+print(zachery.hp_current)
+christian.atk_basic(zachery)
+christian.atk_basic(zachery)
+christian.atk_basic(zachery)
+christian.atk_basic(zachery)
+print(zachery.hp_current)
+
+zachery.heal_self()
+zachery.heal_self()
+zachery.heal_self()
+
+print(zachery.hp_current)
+
+r.brawl(christian, zachery)
+
+print(dir(r))
+
 ########################################################################
 
 		
