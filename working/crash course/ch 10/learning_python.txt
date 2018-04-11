@@ -1,0 +1,3 @@
+In Python you can analyze massive amounts of data at once.
+In Python you can create classes that model real world objects.
+In Python you can randomize output that simulates dice rolls.
