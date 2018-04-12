@@ -23,6 +23,6 @@ while flag == True:
 			with open(filename, 'a') as file_object:
 				file_object.write(str(guest_signature + ": " + guest_input + "\n"))
 		else:
-			break
+			flag == False
 print("\nThanks for coming!")
 		
