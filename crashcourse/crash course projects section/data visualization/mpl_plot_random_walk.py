@@ -6,7 +6,7 @@ while True:
 	#make random walk and plot the points.
 	rw = RandomWalk()
 	rw.fill_walk()
-	plt.scatter(rw.x_values, rw.y_values)
+	plt.plot(rw.x_values, rw.y_values, linewidth=1)
 	plt.show()
 
 	keep_running = input("Make a new walk? (y/n): ")
