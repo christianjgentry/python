@@ -7,8 +7,9 @@ module commonly imported as jparse
 
 #imports
 import json
+import pathlib
 import os
-
+import re
 
 #classes
 class User():
@@ -33,13 +34,16 @@ class User():
 	def append_journal_files(self, directory_in_str):
 		#appends all items of filetype in folder to dictionary instance.
 		directory = os.fsencode(directory_in_str)
+		enumerated_journal = ""
 		for file in os.listdir(directory):
 			filename = os.fsdecode(file)
-			if filename.endswith(".txt"):
+			if filename.endswith(".txt") and "dump" not in filename:
 				pathname = os.path.join(directory_in_str, filename)
 				with open(pathname, 'r') as file_object:
 					if filename not in self.journal_log.keys():
-						self.journal_log[filename] = file_object.readlines()
+						for line in enumerate(file_object.readlines()):
+							enumerated_journal += str(line) + "\n"
+						self.journal_log[filename] = enumerated_journal
 					else:
 						continue
 				continue
@@ -47,6 +51,8 @@ class User():
 				continue
 
 
+	
+	
 #functions
 def read_journal_enumerated(filename_journal):
 	#reads an enumerated journal file.
@@ -57,8 +63,8 @@ def read_journal_enumerated(filename_journal):
 	return enumerated_journal			
 
 def cycle_journal_files(directory_in_str):
+	#prints a list of all journal files in a folder.
 	directory = os.fsencode(directory_in_str)
-
 	for file in os.listdir(directory):
 		filename = os.fsdecode(file)
 		if filename.endswith(".txt"): 
@@ -67,15 +73,27 @@ def cycle_journal_files(directory_in_str):
 		else:
 			continue
 
+def extract_info_hardware_graphics(filename):
+	graphics_hardware = {}
+	filename = filename.lower().splitlines()
+	for line in filename:
+		if "video card environment" in line:
+			values = re.findall('"([^"]*)"', line)
+			graphics_hardware["graphics card:"] = values[0]
+			graphics_hardware["manufacturer id:"] = values[1]
+			graphics_hardware["device id:"] = values[2]
+	return graphics_hardware
+
+#execute
 
 christian = User("christian")
 
-location = 'C:\\Users\Christian Gentry\AppData\Local\Autodesk\Revit\Autodesk Revit 2018\Journals'			       
+location ='.\Journals'			       
 
 christian.append_journal_files(location)
+#print(christian.journal_log)
 
-print(christian.journal_log.keys())
-
-#cycle_journal_files(location)
+for key in christian.journal_log.keys():
+	print(extract_info_hardware_graphics(christian.journal_log[key]))
 
 
