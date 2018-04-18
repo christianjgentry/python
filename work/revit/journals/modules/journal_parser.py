@@ -36,7 +36,8 @@ class User():
 		for file in os.listdir(directory):
 			filename = os.fsdecode(file)
 			if filename.endswith(".txt"):
-				with open(filename, 'r') as file_object:
+				pathname = os.path.join(directory_in_str, filename)
+				with open(pathname, 'r') as file_object:
 					if filename not in self.journal_log.keys():
 						self.journal_log[filename] = file_object.readlines()
 					else:
@@ -72,6 +73,8 @@ christian = User("christian")
 location = 'C:\\Users\Christian Gentry\AppData\Local\Autodesk\Revit\Autodesk Revit 2018\Journals'			       
 
 christian.append_journal_files(location)
+
+print(christian.journal_log.keys())
 
 #cycle_journal_files(location)
 
