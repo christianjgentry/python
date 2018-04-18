@@ -22,6 +22,7 @@ class User():
 		self.journal_log = {}
 	
 	def get_dict(self):
+		#gets the dictionary associated with class instance.
 		self.dict = {	
 		"username" : self.username,
 		"title" : self.title,
@@ -30,8 +31,8 @@ class User():
 		return self.dict
 	
 	def append_journal_files(self, directory_in_str):
+		#appends all items of filetype in folder to dictionary instance.
 		directory = os.fsencode(directory_in_str)
-
 		for file in os.listdir(directory):
 			filename = os.fsdecode(file)
 			if filename.endswith(".txt"):
