@@ -2,7 +2,7 @@ import pathlib
 import journal_parser as jparse
 import re
 
-filename = jparse.read_journal_enumerated('journal.0013.txt')
+filename = 'journal.0028.txt'
 
 def extract_info_hardware_graphics(filename):
 	graphics_hardware = {}
@@ -14,8 +14,8 @@ def extract_info_hardware_graphics(filename):
 			graphics_hardware["manufacturer id:"] = values[1]
 			graphics_hardware["device id:"] = values[2]
 	return graphics_hardware
+	
 
-print(extract_info_hardware_graphics(filename))
 
 '''
 max_ram = 32751
