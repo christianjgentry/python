@@ -88,26 +88,71 @@ def extract_info_hardware_graphics(filename):
 				graphics_hardware["manufacturer id:"] = values[1]
 				graphics_hardware["device id:"] = values[2]
 		return graphics_hardware
+		
+def filter_journal(filename, filter_1, filter_2):
+	import re
+
+	with open(filename, 'r') as file_object:
+		lines = file_object.readlines()
+
+	for i, line in enumerate(lines):
+		if re.search(r"" + filter_1 + "\..*" + filter_2 + "", line.lower()):
+			for item in lines[max(i-0, 0):i+2]:
+				print(item.strip())
 
 ##########################################################################################
 #execute
 
 #print(cycle_journal_files('./Journals'))
 '''
-journal_files = cycle_journal_files('./Journals')
+christian = User('christian')
+christian.title = "intern"
+christian.append_journal_files('.')
+
+christian.get_dict()
+
+
 with open('csv_export_test.csv', 'w') as new_csv:
-	fieldnames = ['journal_entry']
+	fieldnames = ['username', 'title', 'journal_log']
+	del christian.dict['journal_log']
 	csv_writer = csv.DictWriter(new_csv, fieldnames=fieldnames)
 	csv_writer.writeheader()
-	csv_writer.writerow(journal_files)
-'''	
+	csv_writer.writerow(christian.dict)
+'''
 
+'''
+enumerated_journal = ""
+with open('journal.0028.txt', 'r') as file_object:
+	for line in enumerate(file_object.readlines()):
+		enumerated_journal += str(line) + "\n"		
+
+for line in enumerated_journal.splitlines():
+	if "jrn" in line.lower() and "user" in line.lower():
+		print(line)
+'''
+
+'''
+import re
+
+with open('journal.0028.txt', 'r') as file_object:
+    lines = file_object.readlines()
+
+for i, line in enumerate(lines):
+    if re.search(r"jrn\..*username", line.lower()):
+        for item in lines[max(i-0, 0):i+2]:
+            print(item.strip())
+'''
+
+
+print(filter_journal('.', 'jrn', 'user'))
+
+'''
 christian = User("christian")
-location ='.\Journals'			       
+location ='.'			       
 
 christian.append_journal_files(location)
 print(christian.journal_log.keys())
-
+'''
 
 '''
 for key in christian.journal_log.keys():
