@@ -3,7 +3,6 @@ import re
 import matplotlib.pyplot as plt
 import math
 
-
 '''
 def extract_info_hardware_graphics(filename):
 	graphics_hardware = {}
