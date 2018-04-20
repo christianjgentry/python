@@ -11,7 +11,7 @@ import pathlib
 import os
 import re
 import csv
-##########################################################################################
+########################################################################
 #classes
 class User():
 	#Class that models a Revit user
@@ -100,7 +100,7 @@ def filter_journal(filename, filter_1, filter_2):
 			for item in lines[max(i-0, 0):i+2]:
 				print(item.strip())
 
-##########################################################################################
+########################################################################
 #execute
 
 #print(cycle_journal_files('./Journals'))
@@ -143,8 +143,15 @@ for i, line in enumerate(lines):
             print(item.strip())
 '''
 
+import re
 
-print(filter_journal('.', 'jrn', 'user'))
+with open('journal.0032.txt', 'r') as file_object:
+    lines = file_object.readlines()
+
+for i, line in enumerate(lines):
+    if re.search(r"jrn\..*username", line.lower()):
+        for item in lines[max(i-0, 0):i+2]:
+            print(item.strip())
 
 '''
 christian = User("christian")

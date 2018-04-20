@@ -1,9 +1,10 @@
 import pathlib
-import journal_parser as jparse
 import re
+import matplotlib.pyplot as plt
+import math
 
-filename = 'journal.0028.txt'
 
+'''
 def extract_info_hardware_graphics(filename):
 	graphics_hardware = {}
 	filename = filename.lower().splitlines()
@@ -14,11 +15,7 @@ def extract_info_hardware_graphics(filename):
 			graphics_hardware["manufacturer id:"] = values[1]
 			graphics_hardware["device id:"] = values[2]
 	return graphics_hardware
-	
-
-
-'''
-max_ram = 32751
+'''	
 
 def ram_percentage(dataset):
 	percentage_list = []
@@ -28,6 +25,11 @@ def ram_percentage(dataset):
 		percentage = math.ceil(percentage)
 		percentage_list.append(percentage)
 	return(percentage_list)
+
+
+max_ram = 32751
+filename = 'journal.0013.txt'
+
 
 ram_record = []
 with open(filename, 'r') as f:
@@ -41,6 +43,7 @@ print(ram_percentages)
 print(ram_record)
 
 
+#Set up plot
 plt.plot(range(1, 26, 1), ram_percentages, c='red', linewidth = 5)
 
 plt.title("RAM Usage Throughout Revit Session", fontsize=24)
@@ -51,6 +54,5 @@ plt.ylabel("RAM Percentage Used", fontsize=14)
 plt.tick_params(axis='both', labelsize=14)
 plt.xticks(range(1,26))
 
+#show the plot
 plt.show()
-
-'''
