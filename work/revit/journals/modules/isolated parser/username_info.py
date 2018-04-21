@@ -29,11 +29,11 @@ def extract_username(filename):
 				extracted_text = item.strip()
 	values = re.findall('"([^"]*)"', extracted_text)
 	username = values[0]
-	print(username)
+	return username
 
 
 for item in cycle_journal_files('.'):
-	extract_username(item)
+	print(extract_username(item))
 
 
             
