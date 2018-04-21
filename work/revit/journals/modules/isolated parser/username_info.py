@@ -3,7 +3,7 @@ import re
 
 
 def cycle_journal_files(directory_in_str):
-	#appends all journal files in folder to a list.
+	#appends all journal files in folder to list journal_files.
 	journal_files = []
 	directory = os.fsencode(directory_in_str)
 	for file in os.listdir(directory):
@@ -15,41 +15,27 @@ def cycle_journal_files(directory_in_str):
 			continue
 	return journal_files
 
-def extract_info_hardware_graphics(filename):
-	graphics_hardware = {}
+
+def extract_username(filename):
+	#pulls the username associated with the journal file into
+	#variable username
+	username = ""
 	with open(filename, 'r') as file_object:
-		file_object = file_object.read()
-		file_object = file_object.lower().splitlines()
-		for line in file_object:
-			if "username" in line:
-				values = re.findall('"([^"]*)"', line)
-				graphics_hardware["graphics card:"] = values[0]
-				#graphics_hardware["manufacturer id:"] = values[1]
-				#graphics_hardware["device id:"] = values[2]
-		return graphics_hardware
+		lines = file_object.readlines()
 
-#print(cycle_journal_files('.'))
+	for i, line in enumerate(lines):
+		if "jrn.directive" in line.lower() and "username" in line.lower(): 
+			for item in lines[max(i-0, 0):i+2]:
+				extracted_text = item.strip()
+	values = re.findall('"([^"]*)"', extracted_text)
+	username = values[0]
+	print(username)
 
-'''
 
-for value in cycle_journal_files('.'):
-	filename = value
-	print(extract_info_hardware_graphics(filename))
+for item in cycle_journal_files('.'):
+	extract_username(item)
 
-'''
 
-with open('journal.0013.txt', 'r') as file_object:
-    lines = file_object.readlines()
-
-for i, line in enumerate(lines):
-	if "jrn.directive" in line.lower() and "username" in line.lower(): 
-		for item in lines[max(i-0, 0):i+2]:
-			print(item.strip())
-			
-            
-            
-            
-            
             
             
             
