@@ -23,7 +23,7 @@ def cycle_journal_files(directory_in_str):
 
 
 action_count = 0
-with open('journal.0023.txt', 'r') as file_object:
+with open('journal.0013.txt', 'r') as file_object:
 	file_object = file_object.readlines()
 	for line in file_object:
 		if "jrn." in line.lower():
