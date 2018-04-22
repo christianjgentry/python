@@ -42,5 +42,12 @@ def extract_revit_info(filename):
 
 filename = 'journal.0013.txt'
 
-print(extract_revit_info(filename))
+
+print("Revit Build:", extract_revit_info(filename)[0])
+print("Revit Branch", extract_revit_info(filename)[1])
+
+
+
+
+
 
