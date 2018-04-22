@@ -131,7 +131,7 @@ for filename in cycle_journal_files('.'):
 	print("User:", extract_info_username(filename))
 	#os info
 	print("OS Version:", extract_info_os(filename)[0])
-	print("OS Build", extract_info_os(filename)[1])
+	print("OS Build:", extract_info_os(filename)[1])
 	#Revit info
 	print("Revit Build:", extract_info_revit(filename)[0])
 	print("Revit Branch:", extract_info_revit(filename)[1])
