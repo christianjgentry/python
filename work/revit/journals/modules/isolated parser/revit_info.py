@@ -18,6 +18,7 @@ def cycle_journal_files(directory_in_str):
 
 
 def extract_revit_info(filename):
+	#parses journal for Revit info.
 	revit_info = ""
 	with open(filename, 'r') as file_object:
 		lines = file_object.readlines()

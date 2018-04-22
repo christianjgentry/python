@@ -16,7 +16,7 @@ def cycle_journal_files(directory_in_str):
 	return journal_files
 
 
-def extract_username(filename):
+def extract_info_username(filename):
 	#pulls the username associated with the journal file into
 	#variable username
 	username = ""

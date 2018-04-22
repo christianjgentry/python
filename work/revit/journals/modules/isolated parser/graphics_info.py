@@ -30,7 +30,8 @@ def cycle_journal_files(directory_in_str):
 			continue
 	return journal_files
 
-def extract_info_hardware_graphics(filename):
+def extract_info_graphics(filename):
+	#parses journal for graphics hardware info.
 	graphics_hardware = {}
 	with open(filename, 'r') as file_object:
 		file_object = file_object.read()
@@ -43,10 +44,9 @@ def extract_info_hardware_graphics(filename):
 				graphics_hardware["device id:"] = values[2]
 		return graphics_hardware
 
-#print(cycle_journal_files('.'))
 
 
 for value in cycle_journal_files('.'):
 	filename = value
-	print(extract_info_hardware_graphics(filename))
+	print(extract_info_graphics(filename))
 

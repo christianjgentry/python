@@ -16,18 +16,8 @@ def cycle_journal_files(directory_in_str):
 	return journal_files
 
 
-'''
-with open('journal.0013.txt', 'r') as file_object:
-    lines = file_object.readlines()
-
-for i, line in enumerate(lines):
-    if re.search(r"operating system info", line.lower()):
-        for item in lines[max(i-0, 0):i+20]:
-			
-            print(item.rstrip())
-'''	
-
-def extract_os_info(filename):
+def extract_info_os(filename):
+	#parses journal for os information.
 	os_info = ""
 	with open(filename, 'r') as file_object:
 		lines = file_object.readlines()
@@ -46,6 +36,9 @@ def extract_os_info(filename):
 	
 	#return values
 	return os_version, os_build
+	
+	
+
 
 #execute
 
