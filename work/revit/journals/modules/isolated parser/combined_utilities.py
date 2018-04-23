@@ -218,8 +218,8 @@ for filename in cycle_journal_files('.'):
 		print("REVIT FAILED")
 	#processor info
 	try:
-		print("Processor Name:", extract_info_processor(filename)[0])
-		print("Processor Clockspeed:", extract_info_processor(filename)[1])
+		print("CPU Name:", extract_info_processor(filename)[0])
+		print("CPU Clockspeed:", extract_info_processor(filename)[1])
 	except:
 		print("PROCESSOR FAILED")
 	#graphics info
@@ -231,9 +231,9 @@ for filename in cycle_journal_files('.'):
 		print("GPU FAILED")
 	#ram info
 	try:
-		print("Max System RAM:", extract_info_ram(filename)[0], "GB")
-		print("Session Average RAM:", extract_info_ram(filename)[1], "GB")
-		print("Peak Session RAM:", extract_info_ram(filename)[2], "GB")
+		print("RAM Max:", extract_info_ram(filename)[0], "GB")
+		print("RAM Session Average:", extract_info_ram(filename)[1], "GB")
+		print("RAM Peak Session:", extract_info_ram(filename)[2], "GB")
 	except:
 		print("RAM FAILED")
 
