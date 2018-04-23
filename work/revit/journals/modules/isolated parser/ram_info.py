@@ -1,10 +1,19 @@
+def cycle_journal_files(directory_in_str):
+	#appends all journal files in folder to list journal_files.
+	import os
+	
+	journal_files = []
+	directory = os.fsencode(directory_in_str)
+	for file in os.listdir(directory):
+		filename = os.fsdecode(file)
+		if filename.endswith(".txt") and "dump" not in filename:
+			journal_files.append(filename)
+			continue
+		else:
+			continue
+	return journal_files
 
 
-
-
-
-#Revit Journal Read Test
-filename = 'journal.0014.txt'
 
 def extract_info_ram(filename):
 	#parse a journal for ram information.
@@ -37,7 +46,11 @@ def extract_info_ram(filename):
 	
 	return ram_max, ram_avg, ram_peak
 
-print(extract_info_ram(filename))
+journal_files = cycle_journal_files('.')
+
+for filename in journal_files:
+	print(filename)
+	print(extract_info_ram(filename))
 
 
 '''

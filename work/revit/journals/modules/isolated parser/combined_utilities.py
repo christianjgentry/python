@@ -21,31 +21,36 @@ def extract_info_processor(filename):
 	import re
 	
 	processor_info = ""
-	with open(filename, 'r') as file_object:
-		lines = file_object.readlines()
-
-	for i, line in enumerate(lines):
-		if re.search(r"processor information:", line.lower()):
-			for item in lines[max(i-0, 0):i+19]:
-				if "name" in item.lower() or "maxclockspeed" in item.lower() and item not in processor_info:
-					processor_info = processor_info + item
-				else:
-					continue
-					
-	processor_info = processor_info.splitlines()
 	
-	for item in processor_info:
-		if "name" in item.lower():
-			processor_name = item
-			processor_name = processor_name.split(":",2)[2].strip()
+	try:
+		with open(filename, 'r') as file_object:
+			lines = file_object.readlines()
 
-	for item in processor_info:
-		if "maxclockspeed" in item.lower():
-			processor_clockspeed = item
-			processor_clockspeed = processor_clockspeed.split(":",2)[2].strip()
-			processor_clockspeed = int(processor_clockspeed) / 1000
-			
-	return processor_name, processor_clockspeed
+		for i, line in enumerate(lines):
+			if re.search(r"processor information:", line.lower()):
+				for item in lines[max(i-0, 0):i+19]:
+					if "name" in item.lower() or "maxclockspeed" in item.lower() and item not in processor_info:
+						processor_info = processor_info + item
+					else:
+						continue
+						
+		processor_info = processor_info.splitlines()
+		
+		for item in processor_info:
+			if "name" in item.lower():
+				processor_name = item
+				processor_name = processor_name.split(":",2)[2].strip()
+
+		for item in processor_info:
+			if "maxclockspeed" in item.lower():
+				processor_clockspeed = item
+				processor_clockspeed = processor_clockspeed.split(":",2)[2].strip()
+				processor_clockspeed = int(processor_clockspeed) / 1000
+				
+		return processor_name, processor_clockspeed
+		
+	except:
+		print("***Could not gather PROCESSOR info from", filename, "***")
 
 
 def extract_info_os(filename):
@@ -53,25 +58,30 @@ def extract_info_os(filename):
 	import re
 	
 	os_info = ""
-	with open(filename, 'r') as file_object:
-		lines = file_object.readlines()
-
-	for i, line in enumerate(lines):
-		if re.search(r"operating system info", line.lower()):
-			for item in lines[max(i-0, 0):i+20]:
-				os_info = os_info + item
-	#get os_version       
-	os_version = os_info.splitlines()[3]
-	os_version = os_version.split(":",2)[2].strip()
-
-	#get os_build
-	os_build = os_info.splitlines()[1]
-	os_build = os_build.split(":",2)[2].strip()
 	
-	#return values
-	return os_version, os_build
+	try:
+		with open(filename, 'r') as file_object:
+			lines = file_object.readlines()
 
+		for i, line in enumerate(lines):
+			if re.search(r"operating system info", line.lower()):
+				for item in lines[max(i-0, 0):i+20]:
+					os_info = os_info + item
+		#get os_version       
+		os_version = os_info.splitlines()[3]
+		os_version = os_version.split(":",2)[2].strip()
 
+		#get os_build
+		os_build = os_info.splitlines()[1]
+		os_build = os_build.split(":",2)[2].strip()
+		
+		#return values
+		return os_version, os_build
+
+	except:
+		print("***Could not gather OS info from", filename, "***")
+		
+		
 def extract_info_graphics(filename):
 	#parses journal for graphics hardware info.
 	import re
@@ -91,7 +101,7 @@ def extract_info_graphics(filename):
 			return graphics_hardware
 			
 	except:
-		print("***Could not gather GPU info.***")
+		print("***Could not gather GPU info from", filename, "***")
 
 def extract_info_revit(filename):
 	#parses journal for Revit info.
@@ -120,7 +130,7 @@ def extract_info_revit(filename):
 		return revit_build, revit_branch
 		
 	except:
-		print("***Could not gather REVIT info.***")
+		print("***Could not gather REVIT info from", filename, "***")
 
 
 def extract_info_username(filename):
@@ -143,7 +153,7 @@ def extract_info_username(filename):
 		return username
 		
 	except:
-		print("***Could not gather USERNAME info.***")
+		print("***Could not gather USERNAME info from", filename, "***")
 
 def extract_info_ram(filename):
 	#parse a journal for ram information.
@@ -178,7 +188,7 @@ def extract_info_ram(filename):
 		return ram_max, ram_avg, ram_peak
 	
 	except:
-		print("***Could not gather RAM info.***")
+		print("***Could not gather RAM info from", filename, "***")
 	
 #execute
 for filename in cycle_journal_files('.'):
