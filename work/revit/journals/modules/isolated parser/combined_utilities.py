@@ -183,7 +183,9 @@ def extract_info_ram(filename):
 		#Convert the extracted ram info into usable data.
 		ram_max = math.floor(int(ram_max) / 1000)
 		ram_avg = sum(ram_record) / len(ram_record) / 1000
+		ram_avg = round(ram_avg, 2)
 		ram_peak = sorted(ram_record)[-1] / 1000
+		ram_peak = round(ram_peak, 2)
 		
 		return ram_max, ram_avg, ram_peak
 	

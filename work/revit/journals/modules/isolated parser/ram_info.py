@@ -25,26 +25,31 @@ def extract_info_ram(filename):
 	journal = ""
 	ram_record = []
 	
-	#transform journal into parsable string
-	with open(filename, 'r') as file_object:
-		lines = file_object.readlines()
-		for line in lines:
-			journal = journal + line		
-	journal = journal.splitlines()
-	
-	#Extract the lines that reference ram in the journal.
-	for line in journal:
-		if "ram statistics" in line.lower():
-			data = line.split(':<')[1]
-			ram_record.append([int(s) for s in data.split() if s.isdigit()][0])
-			ram_max = [int(s) for s in data.split() if s.isdigit()][1]
-	
-	#Convert the extracted ram info into usable data.
-	ram_max = math.floor(int(ram_max) / 1000)
-	ram_avg = math.ceil(sum(ram_record) / len(ram_record))
-	ram_peak = sorted(ram_record)[-1]
-	
-	return ram_max, ram_avg, ram_peak
+	try:
+		#transform journal into parsable string
+		with open(filename, 'r') as file_object:
+			lines = file_object.readlines()
+			for line in lines:
+				journal = journal + line		
+		journal = journal.splitlines()
+		
+		#Extract the lines that reference ram in the journal.
+		for line in journal:
+			if "ram statistics" in line.lower():
+				data = line.split(':<')[1]
+				ram_record.append([int(s) for s in data.split() if s.isdigit()][0])
+				ram_max = [int(s) for s in data.split() if s.isdigit()][1]
+		
+		#Convert the extracted ram info into usable data.
+		ram_max = math.floor(int(ram_max) / 1000)
+		ram_avg = sum(ram_record) / len(ram_record) / 1000
+		ram_peak = sorted(ram_record)[-1] / 1000
+		
+		return ram_max, ram_avg, ram_peak
+		
+	except:
+		print("***Could not gather RAM info from", filename, "***")
+		
 
 journal_files = cycle_journal_files('.')
 
