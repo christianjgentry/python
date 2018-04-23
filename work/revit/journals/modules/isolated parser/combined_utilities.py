@@ -1,4 +1,3 @@
-
 #definitions
 def cycle_journal_files(directory_in_str):
 	#appends all journal files in folder to list journal_files.
@@ -103,6 +102,7 @@ def extract_info_graphics(filename):
 	except:
 		print("***Could not gather GPU info from", filename, "***")
 
+
 def extract_info_revit(filename):
 	#parses journal for Revit info.
 	import re
@@ -155,6 +155,7 @@ def extract_info_username(filename):
 	except:
 		print("***Could not gather USERNAME info from", filename, "***")
 
+
 def extract_info_ram(filename):
 	#parse a journal for ram information.
 	
@@ -191,7 +192,8 @@ def extract_info_ram(filename):
 	
 	except:
 		print("***Could not gather RAM info from", filename, "***")
-	
+
+
 #execute
 for filename in cycle_journal_files('.'):
 	#journal name
