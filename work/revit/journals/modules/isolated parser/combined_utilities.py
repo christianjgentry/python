@@ -12,14 +12,14 @@ def cycle_journal_files(directory_in_str):
 			continue
 		else:
 			continue
-	return journal_files
+	return sorted(journal_files)
 
 
-def extract_info_processor(filename):
-	#parses journal for processor information.
+def extract_info_cpu(filename):
+	#parses journal for cpu information.
 	import re
 	
-	processor_info = ""
+	cpu_info = ""
 	
 	try:
 		with open(filename, 'r') as file_object:
@@ -28,28 +28,28 @@ def extract_info_processor(filename):
 		for i, line in enumerate(lines):
 			if re.search(r"processor information:", line.lower()):
 				for item in lines[max(i-0, 0):i+19]:
-					if "name" in item.lower() or "maxclockspeed" in item.lower() and item not in processor_info:
-						processor_info = processor_info + item
+					if "name" in item.lower() or "maxclockspeed" in item.lower() and item not in cpu_info:
+						cpu_info = cpu_info + item
 					else:
 						continue
 						
-		processor_info = processor_info.splitlines()
+		cpu_info = cpu_info.splitlines()
 		
-		for item in processor_info:
+		for item in cpu_info:
 			if "name" in item.lower():
-				processor_name = item
-				processor_name = processor_name.split(":",2)[2].strip()
+				cpu_name = item
+				cpu_name = cpu_name.split(":",2)[2].strip()
 
-		for item in processor_info:
+		for item in cpu_info:
 			if "maxclockspeed" in item.lower():
-				processor_clockspeed = item
-				processor_clockspeed = processor_clockspeed.split(":",2)[2].strip()
-				processor_clockspeed = int(processor_clockspeed) / 1000
+				cpu_clockspeed = item
+				cpu_clockspeed = cpu_clockspeed.split(":",2)[2].strip()
+				cpu_clockspeed = int(cpu_clockspeed) / 1000
 				
-		return processor_name, processor_clockspeed
+		return cpu_name, cpu_clockspeed
 		
 	except:
-		print("***Could not gather PROCESSOR info from", filename, "***")
+		print("***Could not gather CPU info from", filename, "***")
 
 
 def extract_info_os(filename):
@@ -94,9 +94,9 @@ def extract_info_graphics(filename):
 			for line in file_object:
 				if "video card environment" in line:
 					values = re.findall('"([^"]*)"', line)
-					graphics_hardware["graphics card:"] = values[0]
-					graphics_hardware["manufacturer id:"] = values[1]
-					graphics_hardware["device id:"] = values[2]
+					graphics_hardware["graphics card"] = values[0]
+					graphics_hardware["manufacturer id"] = values[1]
+					graphics_hardware["device id"] = values[2]
 			return graphics_hardware
 			
 	except:
@@ -193,7 +193,7 @@ def extract_info_ram(filename):
 	except:
 		print("***Could not gather RAM info from", filename, "***")
 
-
+'''
 #execute
 for filename in cycle_journal_files('.'):
 	#journal name
@@ -216,12 +216,12 @@ for filename in cycle_journal_files('.'):
 		print("Revit Branch:", extract_info_revit(filename)[1])
 	except:
 		print("REVIT FAILED")
-	#processor info
+	#cpu info
 	try:
-		print("CPU Name:", extract_info_processor(filename)[0])
-		print("CPU Clockspeed:", extract_info_processor(filename)[1])
+		print("CPU Name:", extract_info_cpu(filename)[0])
+		print("CPU Clockspeed:", extract_info_cpu(filename)[1])
 	except:
-		print("PROCESSOR FAILED")
+		print("cpu FAILED")
 	#graphics info
 	try:
 		print("GPU Name:", extract_info_graphics(filename)["graphics card:"])
@@ -236,9 +236,95 @@ for filename in cycle_journal_files('.'):
 		print("RAM Peak Session:", extract_info_ram(filename)[2], "GB")
 	except:
 		print("RAM FAILED")
+		
+		
+'''
+########################################################################
+#Export to Dict
+########################################################################
+'''
+class Journal():
+	
+	def __init__(self, filename):
+		self.journal = {
+			"filename" : filename,
+			"username" : extract_info_username(filename)
+			}
+
+def compile_dict(filename):
+	
+	journals = []
+	
+	for i in cycle_journal_files(file_location):
+		
+		i = Journal(i)
+		journals.append(i)
+	return sorted(journals)
+
+
+'''
+
+file_location = '.'
+
+''''
+journals = ["a", "b", "c"]
+
+	
+
+for item in journals:
+	print(item)
 
 
 
+count = 0
 
+for item in journals:
+	
+	journals[count] = {"letter" : journals[count]}
+	count += 1
+	
+print(journals[0]["letter"])
+'''
 
+count = 0
 
+journals = cycle_journal_files(file_location)
+
+for item in journals:
+	filename = item
+	username = extract_info_username(journals[count])
+	os_version = extract_info_os(journals[count])[0]
+	os_build = extract_info_os(journals[count])[1]
+	revit_build = extract_info_revit(journals[count])[0]
+	revit_branch = extract_info_revit(journals[count])[1]
+	cpu_name = extract_info_cpu(journals[count])[0]
+	cpu_clockspeed = extract_info_cpu(journals[count])[1]
+	gpu = extract_info_graphics(journals[count])
+	try:
+		ram_max = extract_info_ram(journals[count])[0]
+		ram_avg = extract_info_ram(journals[count])[1]
+		ram_peak = extract_info_ram(journals[count])[2]
+	except:
+		ram_max = "error"
+		ram_avg = "error"
+		ram_peak = "error"
+	
+	journals[count] = {
+		"filename" : filename,
+		"username" : username,
+		"os_version" : os_version,
+		"os_build" : os_build,
+		"revit_build" : revit_build,
+		"revit_branch" : revit_branch,
+		"cpu_name" : cpu_name,
+		"cpu_clockspeed" : cpu_clockspeed,
+		"gpu_name" : gpu["graphics card"],
+		"gpu_manufacturer_id" : gpu["manufacturer id"],
+		"gpu_device_id" : gpu["device id"],
+		"ram_max" : ram_max,
+		"ram_avg" : ram_avg,
+		"ram_peak" : ram_peak,
+					}
+	count += 1
+	
+print(journals)
