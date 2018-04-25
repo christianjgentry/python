@@ -94,9 +94,9 @@ def extract_info_graphics(filename):
 			for line in file_object:
 				if "video card environment" in line:
 					values = re.findall('"([^"]*)"', line)
-					graphics_hardware["graphics card"] = values[0]
-					graphics_hardware["manufacturer id"] = values[1]
-					graphics_hardware["device id"] = values[2]
+					graphics_hardware["gpu_name"] = values[0]
+					graphics_hardware["gpu_manufacturer_id"] = values[1]
+					graphics_hardware["gpu_device_id"] = values[2]
 			return graphics_hardware
 			
 	except:
@@ -193,138 +193,105 @@ def extract_info_ram(filename):
 	except:
 		print("***Could not gather RAM info from", filename, "***")
 
-'''
-#execute
-for filename in cycle_journal_files('.'):
-	#journal name
-	print("-----------------------------------------------------------")
-	print(filename)
-	#username
-	try:
-		print("User:", extract_info_username(filename))
-	except:
-		print("USER FAILED")
-	#os info
-	try:
-		print("OS Version:", extract_info_os(filename)[0])
-		print("OS Build:", extract_info_os(filename)[1])
-	except:
-		print("OS FAILED")
-	#Revit info
-	try:
-		print("Revit Build:", extract_info_revit(filename)[0])
-		print("Revit Branch:", extract_info_revit(filename)[1])
-	except:
-		print("REVIT FAILED")
-	#cpu info
-	try:
-		print("CPU Name:", extract_info_cpu(filename)[0])
-		print("CPU Clockspeed:", extract_info_cpu(filename)[1])
-	except:
-		print("cpu FAILED")
-	#graphics info
-	try:
-		print("GPU Name:", extract_info_graphics(filename)["graphics card:"])
-		print("GPU Manufacturer ID:", extract_info_graphics(filename)["manufacturer id:"])
-		print("GPU Device ID:", extract_info_graphics(filename)["device id:"])
-	except:
-		print("GPU FAILED")
-	#ram info
-	try:
-		print("RAM Max:", extract_info_ram(filename)[0], "GB")
-		print("RAM Session Average:", extract_info_ram(filename)[1], "GB")
-		print("RAM Peak Session:", extract_info_ram(filename)[2], "GB")
-	except:
-		print("RAM FAILED")
-		
-		
-'''
-########################################################################
-#Export to Dict
-########################################################################
-'''
-class Journal():
+
+def read_journal_data(file_location):
+	#Reads off all of the gathered journals in a folder.
 	
-	def __init__(self, filename):
-		self.journal = {
+	for filename in cycle_journal_files(file_location):
+		#journal name
+		print("-----------------------------------------------------------")
+		print(filename)
+		#username
+		try:
+			print("User:", extract_info_username(filename))
+		except:
+			print("USER FAILED")
+		#os info
+		try:
+			print("OS Version:", extract_info_os(filename)[0])
+			print("OS Build:", extract_info_os(filename)[1])
+		except:
+			print("OS FAILED")
+		#Revit info
+		try:
+			print("Revit Build:", extract_info_revit(filename)[0])
+			print("Revit Branch:", extract_info_revit(filename)[1])
+		except:
+			print("REVIT FAILED")
+		#cpu info
+		try:
+			print("CPU Name:", extract_info_cpu(filename)[0])
+			print("CPU Clockspeed:", extract_info_cpu(filename)[1])
+		except:
+			print("cpu FAILED")
+		#graphics info
+		try:
+			print("GPU Name:", extract_info_graphics(filename)["graphics card:"])
+			print("GPU Manufacturer ID:", extract_info_graphics(filename)["manufacturer id:"])
+			print("GPU Device ID:", extract_info_graphics(filename)["device id:"])
+		except:
+			print("GPU FAILED")
+		#ram info
+		try:
+			print("RAM Max:", extract_info_ram(filename)[0], "GB")
+			print("RAM Session Average:", extract_info_ram(filename)[1], "GB")
+			print("RAM Peak Session:", extract_info_ram(filename)[2], "GB")
+		except:
+			print("RAM FAILED")
+				
+
+def compile_journals_dict(file_location):
+	#Compiles all journals in a folder into a list of dictionaries.
+
+	count = 0
+	journals = cycle_journal_files(file_location)
+
+	for item in journals:
+		filename = item
+		username = extract_info_username(journals[count])
+		os_version = extract_info_os(journals[count])[0]
+		os_build = extract_info_os(journals[count])[1]
+		revit_build = extract_info_revit(journals[count])[0]
+		revit_branch = extract_info_revit(journals[count])[1]
+		cpu_name = extract_info_cpu(journals[count])[0]
+		cpu_clockspeed = extract_info_cpu(journals[count])[1]
+		gpu = extract_info_graphics(journals[count])
+		try:
+			ram_max = extract_info_ram(journals[count])[0]
+			ram_avg = extract_info_ram(journals[count])[1]
+			ram_peak = extract_info_ram(journals[count])[2]
+		except:
+			ram_max = "error"
+			ram_avg = "error"
+			ram_peak = "error"
+		
+		journals[count] = {
 			"filename" : filename,
-			"username" : extract_info_username(filename)
-			}
-
-def compile_dict(filename):
+			"username" : username,
+			"os_version" : os_version,
+			"os_build" : os_build,
+			"revit_build" : revit_build,
+			"revit_branch" : revit_branch,
+			"cpu_name" : cpu_name,
+			"cpu_clockspeed" : cpu_clockspeed,
+			"gpu_name" : gpu["gpu_name"],
+			"gpu_manufacturer_id" : gpu["gpu_manufacturer_id"],
+			"gpu_device_id" : gpu["gpu_device_id"],
+			"ram_max" : ram_max,
+			"ram_avg" : ram_avg,
+			"ram_peak" : ram_peak,
+						}
+		count += 1
 	
-	journals = []
-	
-	for i in cycle_journal_files(file_location):
-		
-		i = Journal(i)
-		journals.append(i)
-	return sorted(journals)
+	return (journals)
 
 
-'''
+
+#Execute
 
 file_location = '.'
+journals = compile_journals_dict(file_location)
 
-''''
-journals = ["a", "b", "c"]
-
-	
-
-for item in journals:
-	print(item)
-
-
-
-count = 0
-
-for item in journals:
-	
-	journals[count] = {"letter" : journals[count]}
-	count += 1
-	
-print(journals[0]["letter"])
-'''
-
-count = 0
-
-journals = cycle_journal_files(file_location)
-
-for item in journals:
-	filename = item
-	username = extract_info_username(journals[count])
-	os_version = extract_info_os(journals[count])[0]
-	os_build = extract_info_os(journals[count])[1]
-	revit_build = extract_info_revit(journals[count])[0]
-	revit_branch = extract_info_revit(journals[count])[1]
-	cpu_name = extract_info_cpu(journals[count])[0]
-	cpu_clockspeed = extract_info_cpu(journals[count])[1]
-	gpu = extract_info_graphics(journals[count])
-	try:
-		ram_max = extract_info_ram(journals[count])[0]
-		ram_avg = extract_info_ram(journals[count])[1]
-		ram_peak = extract_info_ram(journals[count])[2]
-	except:
-		ram_max = "error"
-		ram_avg = "error"
-		ram_peak = "error"
-	
-	journals[count] = {
-		"filename" : filename,
-		"username" : username,
-		"os_version" : os_version,
-		"os_build" : os_build,
-		"revit_build" : revit_build,
-		"revit_branch" : revit_branch,
-		"cpu_name" : cpu_name,
-		"cpu_clockspeed" : cpu_clockspeed,
-		"gpu_name" : gpu["graphics card"],
-		"gpu_manufacturer_id" : gpu["manufacturer id"],
-		"gpu_device_id" : gpu["device id"],
-		"ram_max" : ram_max,
-		"ram_avg" : ram_avg,
-		"ram_peak" : ram_peak,
-					}
-	count += 1
-	
 print(journals)
+
+
