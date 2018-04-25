@@ -240,7 +240,7 @@ def read_journal_data(file_location):
 			print("RAM FAILED")
 				
 
-def compile_journals_dict(file_location):
+def compile_journal_list(file_location):
 	#Compiles all journals in a folder into a list of dictionaries.
 
 	count = 0
@@ -286,12 +286,23 @@ def compile_journals_dict(file_location):
 	return (journals)
 
 
+def write_to_csv(file_location, journal_list, csv_name):
+	#writes a list of journal dictionaries to a csv file.
+	import csv
+
+	myFile = open(csv_name, 'w')  
+	with myFile:  
+		myFields = ["filename", "username", "os_version", "os_build", "revit_build", "revit_branch", "cpu_name", "cpu_clockspeed", "gpu_name", "gpu_manufacturer_id", "gpu_device_id", "ram_max", "ram_avg", "ram_peak"]
+		writer = csv.DictWriter(myFile, fieldnames=myFields)    
+		writer.writeheader()
+		for item in journals:
+			writer.writerow(item)
+
 
 #Execute
-
-file_location = '.'
-journals = compile_journals_dict(file_location)
-
-print(journals)
-
-
+journals = compile_journal_list('.')
+			
+write_to_csv('.', journals, 'test_2.csv')			
+	
+		
+		
