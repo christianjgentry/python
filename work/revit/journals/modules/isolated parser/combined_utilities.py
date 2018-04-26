@@ -17,7 +17,6 @@ def cycle_journal_files(directory_in_str):
 
 def extract_info_date(filename):
 	#Extracts the date the journal file was opened and closed.
-	from datetime import datetime
 
 	start_end = []
 
@@ -32,10 +31,15 @@ def extract_info_date(filename):
 	except:
 		print("***Could not gather DATE/TIME info from", filename, "***")
 
-	start_date = start_end[0].split(';')[0][3:15].rstrip()
-	end_date = start_end[0].split(';')[0][3:15].rstrip()
+	start_date = start_end[0].split(';')[0][3:15].rstrip().strip()
 	
-	return start_date
+	try:
+		end_date = start_end[1].split(';')[0][3:15].rstrip().strip()
+	
+	except:
+		end_date = None
+	
+	return start_date, end_date
 
 
 def extract_info_cpu(filename):
@@ -272,7 +276,7 @@ def compile_journal_list(file_location):
 	for item in journals:
 		filename = item
 		username = extract_info_username(journals[count])
-		journal_date = extract_info_date(journals[count])
+		journal_date = extract_info_date(journals[count])[0]
 		os_version = extract_info_os(journals[count])[0]
 		os_build = extract_info_os(journals[count])[1]
 		revit_build = extract_info_revit(journals[count])[0]
@@ -317,7 +321,10 @@ def write_to_csv(file_location, journal_list, csv_name):
 
 	myFile = open(csv_name, 'w')  
 	with myFile:  
-		myFields = ["filename", "username", "date", "os_version", "os_build", "revit_build", "revit_branch", "cpu_name", "cpu_clockspeed", "gpu_name", "gpu_manufacturer_id", "gpu_device_id", "ram_max", "ram_avg", "ram_peak"]
+		myFields = ["filename", "username", "date", "os_version",
+			"os_build", "revit_build", "revit_branch", "cpu_name",
+			"cpu_clockspeed", "gpu_name", "gpu_manufacturer_id",
+			"gpu_device_id", "ram_max", "ram_avg", "ram_peak"]
 		writer = csv.DictWriter(myFile, fieldnames=myFields)    
 		writer.writeheader()
 		for item in journals:
@@ -331,37 +338,15 @@ def write_to_csv(file_location, journal_list, csv_name):
 '''
 journals = compile_journal_list('.')
 			
-write_to_csv('.', journals, 'test_2.csv')			
-'''
-'''
-from datetime import datetime
-import re
-	
+write_to_csv('.', journals, 'test_3.csv')			
 
-filename = 'journal.0013.txt'
-start_end = []
-
-try:
-	with open(filename, 'r') as file_object:
-		lines = file_object.readlines()
-
-	for i, line in enumerate(lines):
-		if "recording journal file" in line.lower():
-			start_end.append(line.strip().lower())
-	
-except:
-	print("***Could not gather DATE/TIME info from", filename, "***")
-
-print(start_end[0].split(';')[0][3:])
-print(start_end[1].split(';')[0][3:])
 '''
 
-filename = 'journal.0023.txt'
-print(extract_info_date(filename))
-#datetime_object = datetime.strptime(start_end[0], '%d-%b-%Y')
-#print(datetime_object)
-#print(datetime_object)
+journals = cycle_journal_files('.')
+for item in journals:
+	print(extract_info_date(item))
 
-	
-		
+
+
+
 		
