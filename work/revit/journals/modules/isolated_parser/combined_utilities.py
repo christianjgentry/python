@@ -48,8 +48,8 @@ def extract_info_date_time(filename):
 	#TIMES	
 	try:	
 		#Split lines for times
-		start_time = start_end[0].split(';')[0][16:23].rstrip().strip()
-		end_time = start_end[1].split(';')[0][16:23].rstrip().strip()
+		start_time = start_end[0].split(';')[0][15:23].rstrip().strip()
+		end_time = start_end[1].split(';')[0][15:23].rstrip().strip()
 		
 		#convert times into datetime objects.
 		start_time = datetime.strptime(start_time, '%H:%M:%S')
@@ -59,8 +59,8 @@ def extract_info_date_time(filename):
 		tdelta = end_time - start_time
 
 		#Convert datetime objects into readable formats.
-		start_time = start_time.strftime('%H:%M:%S')
-		end_time = end_time.strftime('%H:%M:%S')
+		start_time = start_time.strftime('%H:%M:%S %p') #replace H w/ I for 24 hour time
+		end_time = end_time.strftime('%H:%M:%S %p') #replace H w/ I for 24 hour time
 		tdelta = str(tdelta)
 	
 	except:
@@ -250,6 +250,40 @@ def extract_info_ram(filename):
 		print("***Could not gather RAM info from", filename, "***")
 
 
+def extract_info_commands(filename):
+	#parses journal for jrn commands.
+
+	#imports
+	import math
+
+	#create empty lists for data to be stored to.
+	jrn_commands = []
+	jrn_hotkeys = []
+
+	#open journal as readable file
+	with open(filename, 'r') as file_object:
+		lines = file_object.readlines()
+		
+		#parse out lines containing 'jrn.command' from journal
+		for i, line in enumerate(lines):
+			if "jrn.command" in line.lower() and "above" not in line.lower():
+				jrn_commands.append(line.lower())
+
+	#get hotkey use percentage
+	for line in jrn_commands:
+		if "accelkey" in line.lower() or "shortcut" in line.lower():
+			jrn_hotkeys.append(line.lower())
+
+	#store data to variables
+	commands_total = len(jrn_commands)
+	commands_hotkey = len(jrn_hotkeys)
+	commands_hotkey_percentage = math.ceil((commands_hotkey / commands_total) * 100)
+	commands_dynamo = str(jrn_commands).count("dynamo")
+
+	#return variables
+	return commands_total, commands_hotkey_percentage, commands_dynamo
+
+
 def read_journal_data(file_location):
 	#Reads off all of the gathered journals in a folder.
 	
@@ -257,16 +291,22 @@ def read_journal_data(file_location):
 		#journal name
 		print("-----------------------------------------------------------")
 		print(filename)
-		#username
-		try:
-			print("User:", extract_info_username(filename))
-		except:
-			print("USER FAILED")
+
 		#date
 		try:
 			print("Date:", extract_info_date_time(filename)[0])
 		except:
 			print("DATE FAILED")
+		#session_start
+		try:
+			print:("Session start time:", extract_info_date_time(filename)[2])
+		except:
+			print:("SESSION START TIME FAILED")
+		#session_end
+		try:
+			print("Session end time:", extract_info_date_time(filename))[3]
+		except:
+			print("SESSION END TIME FAILED")
 		#length of revit session
 		try:
 			print("Length of Revit session:", extract_info_date_time(filename)[4])
@@ -304,8 +344,16 @@ def read_journal_data(file_location):
 			print("RAM Peak Session:", extract_info_ram(filename)[2], "GB")
 		except:
 			print("RAM FAILED")
+		#commands info
+		try:
+			print("Commands Total:", extract_info_commands(filename)[0])
+			print("Commands Hotkey Percentage: " + str(extract_info_commands(filename)[1]) + "%")
+			print("Commands Dynamo:", extract_info_commands(filename)[2])
 				
-
+		except:
+			print("COMMANDS FAILED")
+				
+			
 def compile_journal_list(file_location):
 	#Compiles all journals in a folder into a list of dictionaries.
 
@@ -316,6 +364,8 @@ def compile_journal_list(file_location):
 		filename = item
 		username = extract_info_username(journals[count])
 		journal_date = extract_info_date_time(journals[count])[0]
+		start_time = extract_info_date_time(journals[count])[2]
+		end_time = extract_info_date_time(journals[count])[3]
 		session_length = extract_info_date_time(journals[count])[4]
 		os_version = extract_info_os(journals[count])[0]
 		os_build = extract_info_os(journals[count])[1]
@@ -324,6 +374,9 @@ def compile_journal_list(file_location):
 		cpu_name = extract_info_cpu(journals[count])[0]
 		cpu_clockspeed = extract_info_cpu(journals[count])[1]
 		gpu = extract_info_graphics(journals[count])
+		commands_total = extract_info_commands(journals[count])[0]
+		commands_hotkey_percentage = extract_info_commands(journals[count])[1]
+		commands_dynamo = extract_info_commands(journals[count])[2]
 		try:
 			ram_max = extract_info_ram(journals[count])[0]
 			ram_avg = extract_info_ram(journals[count])[1]
@@ -337,6 +390,8 @@ def compile_journal_list(file_location):
 			"filename" : filename,
 			"username" : username,
 			"date" : journal_date,
+			"start_time" : start_time,
+			"end_time" : end_time,
 			"length_of_revit_session" : session_length,
 			"os_version" : os_version,
 			"os_build" : os_build,
@@ -350,6 +405,9 @@ def compile_journal_list(file_location):
 			"ram_max" : ram_max,
 			"ram_avg" : ram_avg,
 			"ram_peak" : ram_peak,
+			"commands_total" : commands_total,
+			"commands_hotkey_percentage" : commands_hotkey_percentage,
+			"commands_dynamo" : commands_dynamo,
 						}
 		count += 1
 	
@@ -362,25 +420,24 @@ def write_to_csv(file_location, journal_list, csv_name):
 
 	myFile = open(csv_name, 'w')  
 	with myFile:  
-		myFields = ["filename", "username", "date",
-			"length_of_revit_session", "os_version",
+		myFields = ["filename", "username", "date", "start_time",
+			"end_time", "length_of_revit_session", "os_version",
 			"os_build", "revit_build", "revit_branch", "cpu_name",
 			"cpu_clockspeed", "gpu_name", "gpu_manufacturer_id",
-			"gpu_device_id", "ram_max", "ram_avg", "ram_peak"]
+			"gpu_device_id", "ram_max", "ram_avg", "ram_peak",
+			"commands_total", "commands_hotkey_percentage",
+			"commands_dynamo"]
 		writer = csv.DictWriter(myFile, fieldnames=myFields)    
 		writer.writeheader()
 		for item in journals:
 			writer.writerow(item)
 
+
+
+
 #Execute
 
-journals = compile_journal_list('.')
-write_to_csv('.', journals, 'test_5.csv')			
+print(read_journal_data('.'))
 
 
 
-'''		
-journals = cycle_journal_files('.')
-for item in journals:
-	print(extract_info_date_time(item))		
-'''
