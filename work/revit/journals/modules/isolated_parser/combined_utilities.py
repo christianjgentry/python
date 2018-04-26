@@ -291,7 +291,11 @@ def read_journal_data(file_location):
 		#journal name
 		print("-----------------------------------------------------------")
 		print(filename)
-
+		#username
+		try:
+			print("User:", extract_info_username(filename))
+		except:
+			print("USER FAILED")
 		#date
 		try:
 			print("Date:", extract_info_date_time(filename)[0])
@@ -299,12 +303,12 @@ def read_journal_data(file_location):
 			print("DATE FAILED")
 		#session_start
 		try:
-			print:("Session start time:", extract_info_date_time(filename)[2])
+			print("Session start time:", extract_info_date_time(filename)[2])
 		except:
-			print:("SESSION START TIME FAILED")
+			print("SESSION START TIME FAILED")
 		#session_end
 		try:
-			print("Session end time:", extract_info_date_time(filename))[3]
+			print("Session end time:", extract_info_date_time(filename)[3])
 		except:
 			print("SESSION END TIME FAILED")
 		#length of revit session
@@ -329,7 +333,7 @@ def read_journal_data(file_location):
 			print("CPU Name:", extract_info_cpu(filename)[0])
 			print("CPU Clockspeed:", extract_info_cpu(filename)[1])
 		except:
-			print("cpu FAILED")
+			print("CPU FAILED")
 		#graphics info
 		try:
 			print("GPU Name:", extract_info_graphics(filename)["graphics card:"])
