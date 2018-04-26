@@ -375,8 +375,7 @@ def write_to_csv(file_location, journal_list, csv_name):
 #Execute
 
 journals = compile_journal_list('.')
-	
-write_to_csv('.', journals, 'test_4.csv')			
+write_to_csv('.', journals, 'test_5.csv')			
 
 
 
