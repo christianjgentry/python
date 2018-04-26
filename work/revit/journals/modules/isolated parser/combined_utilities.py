@@ -15,11 +15,15 @@ def cycle_journal_files(directory_in_str):
 	return sorted(journal_files)
 
 
-def extract_info_date(filename):
+def extract_info_date_time(filename):
 	#Extracts the date the journal file was opened and closed.
-
+	#import module
+	from datetime import datetime
+	
+	#create list for lines to be stored in.
 	start_end = []
-
+	
+	#search journals for lines containing "recording journal files"
 	try:
 		with open(filename, 'r') as file_object:
 			lines = file_object.readlines()
@@ -30,16 +34,41 @@ def extract_info_date(filename):
 		
 	except:
 		print("***Could not gather DATE/TIME info from", filename, "***")
-
+	
+	#DATES
+	#Split lines for dates
 	start_date = start_end[0].split(';')[0][3:15].rstrip().strip()
 	
 	try:
 		end_date = start_end[1].split(';')[0][3:15].rstrip().strip()
 	
 	except:
-		end_date = None
+		end_date = "error"
+		
+	#TIMES	
+	try:	
+		#Split lines for times
+		start_time = start_end[0].split(';')[0][16:23].rstrip().strip()
+		end_time = start_end[1].split(';')[0][16:23].rstrip().strip()
+		
+		#convert times into datetime objects.
+		start_time = datetime.strptime(start_time, '%H:%M:%S')
+		end_time = datetime.strptime(end_time, '%H:%M:%S')
+			
+		#Subtract start and end times for total time.
+		tdelta = end_time - start_time
+
+		#Convert datetime objects into readable formats.
+		start_time = start_time.strftime('%H:%M:%S')
+		end_time = end_time.strftime('%H:%M:%S')
+		tdelta = str(tdelta)
 	
-	return start_date, end_date
+	except:
+		start_time = start_end[0].split(';')[0][16:23].rstrip().strip()
+		end_time = "error"
+		tdelta = "error"
+		
+	return start_date, end_date, start_time, end_time, tdelta
 
 
 def extract_info_cpu(filename):
@@ -233,6 +262,16 @@ def read_journal_data(file_location):
 			print("User:", extract_info_username(filename))
 		except:
 			print("USER FAILED")
+		#date
+		try:
+			print("Date:", extract_info_date_time(filename)[0])
+		except:
+			print("DATE FAILED")
+		#length of revit session
+		try:
+			print("Length of Revit session:", extract_info_date_time(filename)[4])
+		except:
+			print("LENGTH OF SESSION FAILED")
 		#os info
 		try:
 			print("OS Version:", extract_info_os(filename)[0])
@@ -276,7 +315,8 @@ def compile_journal_list(file_location):
 	for item in journals:
 		filename = item
 		username = extract_info_username(journals[count])
-		journal_date = extract_info_date(journals[count])[0]
+		journal_date = extract_info_date_time(journals[count])[0]
+		session_length = extract_info_date_time(journals[count])[4]
 		os_version = extract_info_os(journals[count])[0]
 		os_build = extract_info_os(journals[count])[1]
 		revit_build = extract_info_revit(journals[count])[0]
@@ -297,6 +337,7 @@ def compile_journal_list(file_location):
 			"filename" : filename,
 			"username" : username,
 			"date" : journal_date,
+			"length_of_revit_session" : session_length,
 			"os_version" : os_version,
 			"os_build" : os_build,
 			"revit_build" : revit_build,
@@ -330,23 +371,17 @@ def write_to_csv(file_location, journal_list, csv_name):
 		for item in journals:
 			writer.writerow(item)
 
-
-
-
-
 #Execute
-'''
-journals = compile_journal_list('.')
-			
+
+journals = read_journal_data('.')
+print(journals)
+'''			
 write_to_csv('.', journals, 'test_3.csv')			
 
 '''
 
+'''		
 journals = cycle_journal_files('.')
 for item in journals:
-	print(extract_info_date(item))
-
-
-
-
-		
+	print(extract_info_date_time(item))		
+'''
