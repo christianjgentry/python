@@ -362,7 +362,8 @@ def write_to_csv(file_location, journal_list, csv_name):
 
 	myFile = open(csv_name, 'w')  
 	with myFile:  
-		myFields = ["filename", "username", "date", "os_version",
+		myFields = ["filename", "username", "date",
+			"length_of_revit_session", "os_version",
 			"os_build", "revit_build", "revit_branch", "cpu_name",
 			"cpu_clockspeed", "gpu_name", "gpu_manufacturer_id",
 			"gpu_device_id", "ram_max", "ram_avg", "ram_peak"]
@@ -373,12 +374,11 @@ def write_to_csv(file_location, journal_list, csv_name):
 
 #Execute
 
-journals = read_journal_data('.')
-print(journals)
-'''			
-write_to_csv('.', journals, 'test_3.csv')			
+journals = compile_journal_list('.')
+	
+write_to_csv('.', journals, 'test_4.csv')			
 
-'''
+
 
 '''		
 journals = cycle_journal_files('.')
