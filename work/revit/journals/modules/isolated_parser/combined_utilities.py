@@ -281,7 +281,7 @@ def extract_info_commands(filename):
 	commands_dynamo = str(jrn_commands).count("dynamo")
 
 	#return variables
-	return commands_total, commands_hotkey_percentage, commands_dynamo
+	return commands_total, commands_hotkey_percentage, commands_dynamo, jrn_commands
 
 
 def read_journal_data(file_location):
@@ -365,55 +365,61 @@ def compile_journal_list(file_location):
 	journals = cycle_journal_files(file_location)
 
 	for item in journals:
-		filename = item
-		username = extract_info_username(journals[count])
-		journal_date = extract_info_date_time(journals[count])[0]
-		start_time = extract_info_date_time(journals[count])[2]
-		end_time = extract_info_date_time(journals[count])[3]
-		session_length = extract_info_date_time(journals[count])[4]
-		os_version = extract_info_os(journals[count])[0]
-		os_build = extract_info_os(journals[count])[1]
-		revit_build = extract_info_revit(journals[count])[0]
-		revit_branch = extract_info_revit(journals[count])[1]
-		cpu_name = extract_info_cpu(journals[count])[0]
-		cpu_clockspeed = extract_info_cpu(journals[count])[1]
-		gpu = extract_info_graphics(journals[count])
-		commands_total = extract_info_commands(journals[count])[0]
-		commands_hotkey_percentage = extract_info_commands(journals[count])[1]
-		commands_dynamo = extract_info_commands(journals[count])[2]
 		try:
-			ram_max = extract_info_ram(journals[count])[0]
-			ram_avg = extract_info_ram(journals[count])[1]
-			ram_peak = extract_info_ram(journals[count])[2]
-		except:
-			ram_max = "error"
-			ram_avg = "error"
-			ram_peak = "error"
-		
-		journals[count] = {
-			"filename" : filename,
-			"username" : username,
-			"date" : journal_date,
-			"start_time" : start_time,
-			"end_time" : end_time,
-			"length_of_revit_session" : session_length,
-			"os_version" : os_version,
-			"os_build" : os_build,
-			"revit_build" : revit_build,
-			"revit_branch" : revit_branch,
-			"cpu_name" : cpu_name,
-			"cpu_clockspeed" : cpu_clockspeed,
-			"gpu_name" : gpu["gpu_name"],
-			"gpu_manufacturer_id" : gpu["gpu_manufacturer_id"],
-			"gpu_device_id" : gpu["gpu_device_id"],
-			"ram_max" : ram_max,
-			"ram_avg" : ram_avg,
-			"ram_peak" : ram_peak,
-			"commands_total" : commands_total,
-			"commands_hotkey_percentage" : commands_hotkey_percentage,
-			"commands_dynamo" : commands_dynamo,
+			filename = item
+			username = extract_info_username(journals[count])
+			journal_date = extract_info_date_time(journals[count])[0]
+			start_time = extract_info_date_time(journals[count])[2]
+			end_time = extract_info_date_time(journals[count])[3]
+			session_length = extract_info_date_time(journals[count])[4]
+			os_version = extract_info_os(journals[count])[0]
+			os_build = extract_info_os(journals[count])[1]
+			revit_build = extract_info_revit(journals[count])[0]
+			revit_branch = extract_info_revit(journals[count])[1]
+			cpu_name = extract_info_cpu(journals[count])[0]
+			cpu_clockspeed = extract_info_cpu(journals[count])[1]
+			gpu = extract_info_graphics(journals[count])
+			commands_total = extract_info_commands(journals[count])[0]
+			commands_hotkey_percentage = extract_info_commands(journals[count])[1]
+			commands_dynamo = extract_info_commands(journals[count])[2]
+			try:
+				ram_max = extract_info_ram(journals[count])[0]
+				ram_avg = extract_info_ram(journals[count])[1]
+				ram_peak = extract_info_ram(journals[count])[2]
+			except:
+				ram_max = "error"
+				ram_avg = "error"
+				ram_peak = "error"
+			
+			journals[count] = {
+				"filename" : filename,
+				"username" : username,
+				"date" : journal_date,
+				"start_time" : start_time,
+				"end_time" : end_time,
+				"length_of_revit_session" : session_length,
+				"os_version" : os_version,
+				"os_build" : os_build,
+				"revit_build" : revit_build,
+				"revit_branch" : revit_branch,
+				"cpu_name" : cpu_name,
+				"cpu_clockspeed" : cpu_clockspeed,
+				"gpu_name" : gpu["gpu_name"],
+				"gpu_manufacturer_id" : gpu["gpu_manufacturer_id"],
+				"gpu_device_id" : gpu["gpu_device_id"],
+				"ram_max" : ram_max,
+				"ram_avg" : ram_avg,
+				"ram_peak" : ram_peak,
+				"commands_total" : commands_total,
+				"commands_hotkey_percentage" : commands_hotkey_percentage,
+				"commands_dynamo" : commands_dynamo,
 						}
-		count += 1
+			count += 1
+	
+			
+		except:
+			count += 1
+			pass
 	
 	return (journals)
 
@@ -440,8 +446,16 @@ def write_to_csv(file_location, journal_list, csv_name):
 
 
 #Execute
+'''
+for line in extract_info_commands("journal.0006.txt")[3]:
+	print(line)
+'''
+#print(read_journal_data('.'))
 
-print(read_journal_data('.'))
+#journals = compile_journal_list('.')
+#print(journals)
 
 
+journals = compile_journal_list('.')
+write_to_csv('.', journals, 'test_2.csv' )
 
