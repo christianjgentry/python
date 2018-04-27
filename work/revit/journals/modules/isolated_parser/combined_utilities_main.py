@@ -17,13 +17,14 @@ def cycle_journal_files(directory_in_str):
 
 def extract_info_project_name_location(filename):
 	#parse a journal for file location and project name.
+	import codecs
 	
 	#Variables to store journal info to.
 	journal = ""
 	path_list = []
 	
 	#transform journal into parsable string
-	with open(filename, 'r') as file_object:
+	with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
 		lines = file_object.readlines()
 		for line in lines:
 			journal = journal + line		
@@ -55,13 +56,14 @@ def extract_info_date_time(filename):
 	#Extracts the date the journal file was opened and closed.
 	#import module
 	from datetime import datetime
+	import codecs
 	
 	#create list for lines to be stored in.
 	start_end = []
 	
 	#search journals for lines containing "recording journal files"
 	try:
-		with open(filename, 'r') as file_object:
+		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
 			lines = file_object.readlines()
 
 		for i, line in enumerate(lines):
@@ -110,11 +112,12 @@ def extract_info_date_time(filename):
 def extract_info_cpu(filename):
 	#parses journal for cpu information.
 	import re
+	import codecs
 	
 	cpu_info = ""
 	
 	try:
-		with open(filename, 'r') as file_object:
+		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
 			lines = file_object.readlines()
 
 		for i, line in enumerate(lines):
@@ -147,11 +150,12 @@ def extract_info_cpu(filename):
 def extract_info_os(filename):
 	#parses journal for os information.
 	import re
+	import codecs
 	
 	os_info = ""
 	
 	try:
-		with open(filename, 'r') as file_object:
+		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
 			lines = file_object.readlines()
 
 		for i, line in enumerate(lines):
@@ -176,11 +180,12 @@ def extract_info_os(filename):
 def extract_info_graphics(filename):
 	#parses journal for graphics hardware info.
 	import re
+	import codecs
 	
 	graphics_hardware = {}
 	
 	try:
-		with open(filename, 'r') as file_object:
+		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
 			file_object = file_object.read()
 			file_object = file_object.lower().splitlines()
 			for line in file_object:
@@ -198,11 +203,12 @@ def extract_info_graphics(filename):
 def extract_info_revit(filename):
 	#parses journal for Revit info.
 	import re
+	import codecs
 	
 	revit_info = ""
 	
 	try:
-		with open(filename, 'r') as file_object:
+		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
 			lines = file_object.readlines()
 
 		for i, line in enumerate(lines):
@@ -229,11 +235,12 @@ def extract_info_username(filename):
 	#pulls the username associated with the journal file into
 	#variable username
 	import re
+	import codecs
 	
 	username = ""
 	
 	try:
-		with open(filename, 'r') as file_object:
+		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
 			lines = file_object.readlines()
 
 		for i, line in enumerate(lines):
@@ -253,6 +260,7 @@ def extract_info_ram(filename):
 	
 	#required modules
 	import math
+	import codecs
 	
 	#Variables to store journal info to.
 	journal = ""
@@ -260,7 +268,7 @@ def extract_info_ram(filename):
 	
 	try:
 		#transform journal into parsable string
-		with open(filename, 'r') as file_object:
+		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
 			lines = file_object.readlines()
 			for line in lines:
 				journal = journal + line		
@@ -291,13 +299,14 @@ def extract_info_commands(filename):
 
 	#imports
 	import math
+	import codecs
 
 	#create empty lists for data to be stored to.
 	jrn_commands = []
 	jrn_hotkeys = []
 
 	#open journal as readable file
-	with open(filename, 'r') as file_object:
+	with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
 		lines = file_object.readlines()
 		
 		#parse out lines containing 'jrn.command' from journal
@@ -382,9 +391,9 @@ def read_journal_data(file_location):
 			print("CPU FAILED")
 		#graphics info
 		try:
-			print("GPU Name:", extract_info_graphics(filename)["graphics card:"])
-			print("GPU Manufacturer ID:", extract_info_graphics(filename)["manufacturer id:"])
-			print("GPU Device ID:", extract_info_graphics(filename)["device id:"])
+			print("GPU Name:", extract_info_graphics(filename)["gpu_name"])
+			print("GPU Manufacturer ID:", extract_info_graphics(filename)["gpu_manufacturer_id"])
+			print("GPU Device ID:", extract_info_graphics(filename)["gpu_device_id"])
 		except:
 			print("GPU FAILED")
 		#ram info
@@ -555,7 +564,8 @@ for line in extract_info_commands("journal.0006.txt")[3]:
 
 
 journals = compile_journal_list('.')
-write_to_csv('.', journals, 'test_7.csv' )
+write_to_csv('.', journals, 'test_11.csv' )
+
 
 #print(extract_info_project_name_location('journal.0013.txt')[0])
 
