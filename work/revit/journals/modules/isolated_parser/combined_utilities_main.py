@@ -15,6 +15,42 @@ def cycle_journal_files(directory_in_str):
 	return sorted(journal_files)
 
 
+def extract_info_project_name_location(filename):
+	#parse a journal for file location and project name.
+	
+	#Variables to store journal info to.
+	journal = ""
+	path_list = []
+	
+	#transform journal into parsable string
+	with open(filename, 'r') as file_object:
+		lines = file_object.readlines()
+		for line in lines:
+			journal = journal + line		
+	journal = journal.splitlines()
+	
+	#Extract the lines that reference ram in the journal.
+	for line in journal:
+		if "central=" in line.lower() and "slog" in line.lower():
+			data = line.split('"<')[0]
+			path_list.append([data.splitlines()][0])
+			
+	#create returnable variables
+	file_path = str(path_list[0])[27:]
+	file_path = str(file_path.rstrip().strip()[:-4])
+	
+	project_name = file_path.split("\\")
+	for item in project_name:
+		if ".rvt" in item:
+			project_name = item.strip().rstrip()
+			project_name = project_name.split('"')
+			project_name = str(project_name[0][:-4])
+		else:
+			project_name = "error"
+	
+	return file_path, project_name
+
+
 def extract_info_date_time(filename):
 	#Extracts the date the journal file was opened and closed.
 	#import module
@@ -296,6 +332,16 @@ def read_journal_data(file_location):
 			print("User:", extract_info_username(filename))
 		except:
 			print("USER FAILED")
+		#project_name
+		try:
+			print("Project Name:", extract_info_project_name_location(filename)[1])
+		except:
+			print("PROJECT NAME FAILED")
+		#file_path
+		try:
+			print("File Path:", extract_info_project_name_location(filename)[0])
+		except:
+			print("FILE PATH FAILED")
 		#date
 		try:
 			print("Date:", extract_info_date_time(filename)[0])
@@ -368,6 +414,14 @@ def compile_journal_list(file_location):
 		try:
 			filename = item
 			username = extract_info_username(journals[count])
+			try:
+				project_name = extract_info_project_name_location(journals[count])[1]
+			except:
+				project_name = "error"
+			try:
+				file_path = extract_info_project_name_location(journals[count])[0]
+			except:
+				file_path = "error"
 			journal_date = extract_info_date_time(journals[count])[0]
 			start_time = extract_info_date_time(journals[count])[2]
 			end_time = extract_info_date_time(journals[count])[3]
@@ -394,6 +448,8 @@ def compile_journal_list(file_location):
 			journals[count] = {
 				"filename" : filename,
 				"username" : username,
+				"project_name" : project_name,
+				"file_path" : file_path,
 				"date" : journal_date,
 				"start_time" : start_time,
 				"end_time" : end_time,
@@ -430,10 +486,10 @@ def write_to_csv(file_location, journal_list, csv_name):
 
 	myFile = open(csv_name, 'w')  
 	with myFile:  
-		myFields = ["filename", "username", "date", "start_time",
-			"end_time", "length_of_revit_session", "os_version",
-			"os_build", "revit_build", "revit_branch", "cpu_name",
-			"cpu_clockspeed", "gpu_name", "gpu_manufacturer_id",
+		myFields = ["filename", "username", "project_name", "file_path",
+			"date", "start_time", "end_time", "length_of_revit_session",
+			"os_version", "os_build", "revit_build", "revit_branch",
+			"cpu_name", "cpu_clockspeed", "gpu_name", "gpu_manufacturer_id",
 			"gpu_device_id", "ram_max", "ram_avg", "ram_peak",
 			"commands_total", "commands_hotkey_percentage",
 			"commands_dynamo"]
@@ -457,5 +513,8 @@ for line in extract_info_commands("journal.0006.txt")[3]:
 
 
 journals = compile_journal_list('.')
-write_to_csv('.', journals, 'test_2.csv' )
+write_to_csv('.', journals, 'test_5.csv' )
 
+#print(extract_info_project_name_location('journal.0013.txt')[0])
+
+#print(extract_info_project_name_location('journal.0006.txt'))
