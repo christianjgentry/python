@@ -417,25 +417,67 @@ def compile_journal_list(file_location):
 			try:
 				project_name = extract_info_project_name_location(journals[count])[1]
 			except:
-				project_name = "error"
+				project_name = "depends on central"
 			try:
 				file_path = extract_info_project_name_location(journals[count])[0]
 			except:
-				file_path = "error"
-			journal_date = extract_info_date_time(journals[count])[0]
-			start_time = extract_info_date_time(journals[count])[2]
-			end_time = extract_info_date_time(journals[count])[3]
-			session_length = extract_info_date_time(journals[count])[4]
-			os_version = extract_info_os(journals[count])[0]
-			os_build = extract_info_os(journals[count])[1]
-			revit_build = extract_info_revit(journals[count])[0]
-			revit_branch = extract_info_revit(journals[count])[1]
-			cpu_name = extract_info_cpu(journals[count])[0]
-			cpu_clockspeed = extract_info_cpu(journals[count])[1]
-			gpu = extract_info_graphics(journals[count])
-			commands_total = extract_info_commands(journals[count])[0]
-			commands_hotkey_percentage = extract_info_commands(journals[count])[1]
-			commands_dynamo = extract_info_commands(journals[count])[2]
+				file_path = "no central detected"
+			try:
+				journal_date = extract_info_date_time(journals[count])[0]
+			except:
+				journal_date = "error"
+			try:
+				start_time = extract_info_date_time(journals[count])[2]
+			except:
+				start_time = "error"
+			try:
+				end_time = extract_info_date_time(journals[count])[3]
+			except:
+				end_time = "journal write ended prematurely"
+			try:
+				session_length = extract_info_date_time(journals[count])[4]
+			except:
+				session_length = "error"
+			try:
+				os_version = extract_info_os(journals[count])[0]
+			except:
+				os_version = "error"
+			try:
+				os_build = extract_info_os(journals[count])[1]
+			except:
+				os_build = "error"
+			try:
+				revit_build = extract_info_revit(journals[count])[0]
+			except:
+				revit_build = "error"
+			try:
+				revit_branch = extract_info_revit(journals[count])[1]
+			except:
+				revit_branch = "error"
+			try:
+				cpu_name = extract_info_cpu(journals[count])[0]
+			except:
+				cpu_name = "error"
+			try:
+				cpu_clockspeed = extract_info_cpu(journals[count])[1]
+			except:
+				cpu_clockspeed = "error"
+			try:
+				gpu = extract_info_graphics(journals[count])
+			except:
+				gpu = ["error", "error", "error"]
+			try:
+				commands_total = extract_info_commands(journals[count])[0]
+			except:
+				commands_total = "error"
+			try:
+				commands_hotkey_percentage = extract_info_commands(journals[count])[1]
+			except:
+				commands_hotkey_percentage = "error"
+			try:
+				commands_dynamo = extract_info_commands(journals[count])[2]
+			except:
+				commands_dynamo = "error"
 			try:
 				ram_max = extract_info_ram(journals[count])[0]
 				ram_avg = extract_info_ram(journals[count])[1]
@@ -513,7 +555,7 @@ for line in extract_info_commands("journal.0006.txt")[3]:
 
 
 journals = compile_journal_list('.')
-write_to_csv('.', journals, 'test_5.csv' )
+write_to_csv('.', journals, 'test_7.csv' )
 
 #print(extract_info_project_name_location('journal.0013.txt')[0])
 
