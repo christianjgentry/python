@@ -564,7 +564,7 @@ for line in extract_info_commands("journal.0006.txt")[3]:
 
 
 journals = compile_journal_list('.')
-write_to_csv('.', journals, 'test_11.csv' )
+write_to_csv('.', journals, 'danielle.csv' )
 
 
 #print(extract_info_project_name_location('journal.0013.txt')[0])
