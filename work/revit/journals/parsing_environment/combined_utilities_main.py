@@ -642,8 +642,10 @@ def write_to_csv(file_location, journal_list, csv_name):
 		writer = csv.DictWriter(myFile, fieldnames=myFields)    
 		writer.writeheader()
 		for item in journals:
-			writer.writerow(item)
-
+			try:
+				writer.writerow(item)
+			except:
+				print("error writing data to:", item)
 
 
 
@@ -672,7 +674,7 @@ print(test)
 
 
 journals = compile_journal_list('.')
-write_to_csv('.', journals, 'brian.csv')
+write_to_csv('.', journals, 'christian.csv')
 
 
 
