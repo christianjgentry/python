@@ -304,6 +304,7 @@ def extract_info_commands(filename):
 	#create empty lists for data to be stored to.
 	jrn_commands = []
 	jrn_hotkeys = []
+	commands_escape = []
 
 	#open journal as readable file
 	with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
@@ -311,22 +312,88 @@ def extract_info_commands(filename):
 		
 		#parse out lines containing 'jrn.command' from journal
 		for i, line in enumerate(lines):
-			if "jrn.command" in line.lower() and "above" not in line.lower():
+			if "jrn.command" in line.lower() and "above" not in line.lower() and "cancel the current operation" not in line.lower():
 				jrn_commands.append(line.lower())
-
+		
+		#get how many times escape was pressed.
+		for line in lines:
+			if "cancel the current operation" in line.lower():
+				commands_escape.append(line)
+		 
 	#get hotkey use percentage
 	for line in jrn_commands:
 		if "accelkey" in line.lower() or "shortcut" in line.lower():
 			jrn_hotkeys.append(line.lower())
+	
+	#get dictionary of ordered commands.
+	unique_commands = create_dict_command_occurence(filename)
 
 	#store data to variables
 	commands_total = len(jrn_commands)
 	commands_hotkey = len(jrn_hotkeys)
 	commands_hotkey_percentage = math.ceil((commands_hotkey / commands_total) * 100)
 	commands_dynamo = str(jrn_commands).count("dynamo")
+	commands_escape = len(commands_escape)
 
 	#return variables
-	return commands_total, commands_hotkey_percentage, commands_dynamo, jrn_commands
+	return commands_total, commands_hotkey_percentage, commands_dynamo, unique_commands, commands_escape, jrn_commands
+
+
+def print_commands_ordered(file_location):
+	journals = cycle_journal_files(file_location)
+	for item in journals:
+		test = extract_info_commands(item)[3]
+		print(filename)
+		for k, v in test.items():
+			print(v, k)
+			
+			
+def create_dict_command_occurence(filename):
+	'''creates a dictionary of all commands in a journal with 
+		corresponding occurence value.'''
+	
+	#import required modules.	
+	import codecs
+	import re
+	from operator import itemgetter
+	
+	#the file is opened and read.
+	with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
+		lines = file_object.readlines()
+		
+		#container varialbles are created.
+		non_repeating = []
+		command_occurence_unordered = {}
+		lowercase_lines = []
+		command_occurence_ordered = {}
+		
+		#make all lines lowercase for better parsing.
+		for line in lines:
+			lowercase_lines.append(line.lower())	
+		
+		#filter out all lines with 'jrn.command'
+		for line in lowercase_lines:
+			if "jrn.command" in line.lower():
+				if line.lower() not in non_repeating:
+					non_repeating.append(line.lower())
+				else:
+					pass
+			else:
+				pass
+				
+		#cull all items that repeat, then add to list and count how many
+		#times they repeated.
+		for item in non_repeating:
+			count = lowercase_lines.count(item)
+			command_string = re.findall('"([^"]*)"', item)
+			command_occurence_unordered[str(command_string)] = count
+		
+		#sort the dictionary so the most used commands are on top.
+		for k, v in sorted(command_occurence_unordered.items(), key=itemgetter(1), reverse = True):
+			command_occurence_ordered[k] = v
+		
+		#return the sorted dictionary.
+		return command_occurence_ordered
 
 
 def read_journal_data(file_location):
@@ -407,7 +474,9 @@ def read_journal_data(file_location):
 		try:
 			print("Commands Total:", extract_info_commands(filename)[0])
 			print("Commands Hotkey Percentage: " + str(extract_info_commands(filename)[1]) + "%")
+			print("Commands Unique:", len(extract_info_commands(filename)[3]))
 			print("Commands Dynamo:", extract_info_commands(filename)[2])
+			print("Escape Key Pressed:", extract_info_commands(filename)[4])
 				
 		except:
 			print("COMMANDS FAILED")
@@ -484,9 +553,17 @@ def compile_journal_list(file_location):
 			except:
 				commands_hotkey_percentage = "error"
 			try:
+				commands_unique = len(extract_info_commands(journals[count])[3])
+			except:
+				commands_unique = "error"
+			try:
 				commands_dynamo = extract_info_commands(journals[count])[2]
 			except:
 				commands_dynamo = "error"
+			try:
+				commands_escape_key = extract_info_commands(journals[count])[4]
+			except:
+				commands_escape_key = "error"
 			try:
 				ram_max = extract_info_ram(journals[count])[0]
 				ram_avg = extract_info_ram(journals[count])[1]
@@ -519,7 +596,9 @@ def compile_journal_list(file_location):
 				"ram_peak" : ram_peak,
 				"commands_total" : commands_total,
 				"commands_hotkey_percentage" : commands_hotkey_percentage,
+				"commands_unique" : commands_unique,
 				"commands_dynamo" : commands_dynamo,
+				"commands_escape_key" : commands_escape_key
 						}
 			count += 1
 	
@@ -542,8 +621,8 @@ def write_to_csv(file_location, journal_list, csv_name):
 			"os_version", "os_build", "revit_build", "revit_branch",
 			"cpu_name", "cpu_clockspeed", "gpu_name", "gpu_manufacturer_id",
 			"gpu_device_id", "ram_max", "ram_avg", "ram_peak",
-			"commands_total", "commands_hotkey_percentage",
-			"commands_dynamo"]
+			"commands_total", "commands_hotkey_percentage", "commands_unique",
+			"commands_dynamo", "commands_escape_key"]
 		writer = csv.DictWriter(myFile, fieldnames=myFields)    
 		writer.writeheader()
 		for item in journals:
@@ -553,20 +632,34 @@ def write_to_csv(file_location, journal_list, csv_name):
 
 
 #Execute
+
+
+filename = 'journal.0012.txt'
 '''
-for line in extract_info_commands("journal.0006.txt")[3]:
-	print(line)
+test = extract_info_commands(filename)[3]
+#test = create_dict_command_occurence(filename)
+print(test)
 '''
-#print(read_journal_data('.'))
+'''
+test = compile_journal_list('.')
 
-#journals = compile_journal_list('.')
-#print(journals)
+print(test)
+'''
+'''
+from operator import itemgetter
+#unique commands
+unique_commands = command_occurence_dict(filename)
+	
+for k, v in sorted(unique_commands.items(), key=itemgetter(1), reverse = True):
+	print(v, k)
 
-
+'''
+'''
+#read_journal_data('.')
 journals = compile_journal_list('.')
-write_to_csv('.', journals, 'christian.csv' )
+write_to_csv('.', journals, 'csv_test.csv')
+'''
 
-
-#print(extract_info_project_name_location('journal.0013.txt')[0])
-
-#print(extract_info_project_name_location('journal.0006.txt'))
+			
+print_commands_ordered('.')
+	
