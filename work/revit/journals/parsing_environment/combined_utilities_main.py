@@ -305,6 +305,7 @@ def extract_info_commands(filename):
 	jrn_commands = []
 	jrn_hotkeys = []
 	commands_escape = []
+	most_used_container = []
 
 	#open journal as readable file
 	with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
@@ -324,9 +325,15 @@ def extract_info_commands(filename):
 	for line in jrn_commands:
 		if "accelkey" in line.lower() or "shortcut" in line.lower():
 			jrn_hotkeys.append(line.lower())
-	
+
 	#get dictionary of ordered commands.
 	unique_commands = create_dict_command_occurence(filename)
+	
+	#get most used command
+	for k, v in unique_commands.items():
+		command = str(k)
+		most_used_container.append(command)
+		
 
 	#store data to variables
 	commands_total = len(jrn_commands)
@@ -334,9 +341,10 @@ def extract_info_commands(filename):
 	commands_hotkey_percentage = math.ceil((commands_hotkey / commands_total) * 100)
 	commands_dynamo = str(jrn_commands).count("dynamo")
 	commands_escape = len(commands_escape)
+	most_used_command = most_used_container[0]
 
 	#return variables
-	return commands_total, commands_hotkey_percentage, commands_dynamo, unique_commands, commands_escape, jrn_commands
+	return commands_total, commands_hotkey_percentage, commands_dynamo, unique_commands, commands_escape, most_used_command, jrn_commands
 
 
 def print_commands_ordered(file_location):
@@ -384,13 +392,15 @@ def create_dict_command_occurence(filename):
 		#cull all items that repeat, then add to list and count how many
 		#times they repeated.
 		for item in non_repeating:
-			count = lowercase_lines.count(item)
-			command_string = re.findall('"([^"]*)"', item)
-			command_occurence_unordered[str(command_string)] = count
+			if "cancel the current operation" not in item:
+				count = lowercase_lines.count(item)
+				command_string = re.findall('"([^"]*)"', item)
+				command_occurence_unordered[str(command_string)] = count
 		
 		#sort the dictionary so the most used commands are on top.
 		for k, v in sorted(command_occurence_unordered.items(), key=itemgetter(1), reverse = True):
-			command_occurence_ordered[k] = v
+			if len(k.split()) > 1:
+				command_occurence_ordered[k] = v
 		
 		#return the sorted dictionary.
 		return command_occurence_ordered
@@ -477,6 +487,7 @@ def read_journal_data(file_location):
 			print("Commands Unique:", len(extract_info_commands(filename)[3]))
 			print("Commands Dynamo:", extract_info_commands(filename)[2])
 			print("Escape Key Pressed:", extract_info_commands(filename)[4])
+			print("Most Used Command:", extract_info_commands(filename)[5])
 				
 		except:
 			print("COMMANDS FAILED")
@@ -565,6 +576,10 @@ def compile_journal_list(file_location):
 			except:
 				commands_escape_key = "error"
 			try:
+				commands_most_used = extract_info_commands(journals[count])[5]
+			except:
+				commands_most_used = "error"
+			try:
 				ram_max = extract_info_ram(journals[count])[0]
 				ram_avg = extract_info_ram(journals[count])[1]
 				ram_peak = extract_info_ram(journals[count])[2]
@@ -598,7 +613,8 @@ def compile_journal_list(file_location):
 				"commands_hotkey_percentage" : commands_hotkey_percentage,
 				"commands_unique" : commands_unique,
 				"commands_dynamo" : commands_dynamo,
-				"commands_escape_key" : commands_escape_key
+				"commands_escape_key" : commands_escape_key,
+				"commands_most_used" : commands_most_used
 						}
 			count += 1
 	
@@ -622,7 +638,7 @@ def write_to_csv(file_location, journal_list, csv_name):
 			"cpu_name", "cpu_clockspeed", "gpu_name", "gpu_manufacturer_id",
 			"gpu_device_id", "ram_max", "ram_avg", "ram_peak",
 			"commands_total", "commands_hotkey_percentage", "commands_unique",
-			"commands_dynamo", "commands_escape_key"]
+			"commands_dynamo", "commands_escape_key", "commands_most_used"]
 		writer = csv.DictWriter(myFile, fieldnames=myFields)    
 		writer.writeheader()
 		for item in journals:
@@ -636,30 +652,31 @@ def write_to_csv(file_location, journal_list, csv_name):
 
 filename = 'journal.0012.txt'
 '''
+filename = 'journal.0012.txt'
 test = extract_info_commands(filename)[3]
 #test = create_dict_command_occurence(filename)
-print(test)
+for item in test:
+	print(item)
+sumval = sum(test.values())
+print(sumval)
 '''
+
 '''
 test = compile_journal_list('.')
 
 print(test)
-'''
-'''
-from operator import itemgetter
-#unique commands
-unique_commands = command_occurence_dict(filename)
-	
-for k, v in sorted(unique_commands.items(), key=itemgetter(1), reverse = True):
-	print(v, k)
 
 '''
-'''
+
 #read_journal_data('.')
-journals = compile_journal_list('.')
-write_to_csv('.', journals, 'csv_test.csv')
-'''
 
-			
-print_commands_ordered('.')
-	
+
+journals = compile_journal_list('.')
+write_to_csv('.', journals, 'brian.csv')
+
+
+
+'''
+test = extract_info_commands(filename)[5]
+print(test)
+'''	
