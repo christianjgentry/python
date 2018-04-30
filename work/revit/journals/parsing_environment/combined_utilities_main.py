@@ -182,22 +182,24 @@ def extract_info_graphics(filename):
 	import re
 	import codecs
 	
-	graphics_hardware = {}
+	gpu_info = ""
 	
-	try:
-		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
-			file_object = file_object.read()
-			file_object = file_object.lower().splitlines()
-			for line in file_object:
-				if "video card environment" in line:
-					values = re.findall('"([^"]*)"', line)
-					graphics_hardware["gpu_name"] = values[0]
-					graphics_hardware["gpu_manufacturer_id"] = values[1]
-					graphics_hardware["gpu_device_id"] = values[2]
-			return graphics_hardware
-			
-	except:
-		print("***Could not gather GPU info from", filename, "***")
+	
+	
+	with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
+		lines = file_object.readlines()
+		for i, line in enumerate(lines):
+			if re.search(r"video controller information", line.lower()):
+				for item in lines[max(i-0, 0):i+21]:
+					if item[5:] not in gpu_info:
+						gpu_info = gpu_info + item[5:]
+
+		gpu_info = gpu_info.splitlines()
+		gpu_name = gpu_info[4].split(':')[1].strip().rstrip()
+	
+	return gpu_name
+		
+
 
 
 def extract_info_revit(filename):
@@ -468,9 +470,7 @@ def read_journal_data(file_location):
 			print("CPU FAILED")
 		#graphics info
 		try:
-			print("GPU Name:", extract_info_graphics(filename)["gpu_name"])
-			print("GPU Manufacturer ID:", extract_info_graphics(filename)["gpu_manufacturer_id"])
-			print("GPU Device ID:", extract_info_graphics(filename)["gpu_device_id"])
+			print("GPU Name:", extract_info_graphics(filename))
 		except:
 			print("GPU FAILED")
 		#ram info
@@ -552,9 +552,9 @@ def compile_journal_list(file_location):
 			except:
 				cpu_clockspeed = "error"
 			try:
-				gpu = extract_info_graphics(journals[count])
+				gpu_name = extract_info_graphics(journals[count])
 			except:
-				gpu = ["error", "error", "error"]
+				gpu_name = "error"
 			try:
 				commands_total = extract_info_commands(journals[count])[0]
 			except:
@@ -603,9 +603,7 @@ def compile_journal_list(file_location):
 				"revit_branch" : revit_branch,
 				"cpu_name" : cpu_name,
 				"cpu_clockspeed" : cpu_clockspeed,
-				"gpu_name" : gpu["gpu_name"],
-				"gpu_manufacturer_id" : gpu["gpu_manufacturer_id"],
-				"gpu_device_id" : gpu["gpu_device_id"],
+				"gpu_name" : gpu_name,
 				"ram_max" : ram_max,
 				"ram_avg" : ram_avg,
 				"ram_peak" : ram_peak,
@@ -635,8 +633,7 @@ def write_to_csv(file_location, journal_list, csv_name):
 		myFields = ["filename", "username", "project_name", "file_path",
 			"date", "start_time", "end_time", "length_of_revit_session",
 			"os_version", "os_build", "revit_build", "revit_branch",
-			"cpu_name", "cpu_clockspeed", "gpu_name", "gpu_manufacturer_id",
-			"gpu_device_id", "ram_max", "ram_avg", "ram_peak",
+			"cpu_name", "cpu_clockspeed", "gpu_name", "ram_max", "ram_avg", "ram_peak",
 			"commands_total", "commands_hotkey_percentage", "commands_unique",
 			"commands_dynamo", "commands_escape_key", "commands_most_used"]
 		writer = csv.DictWriter(myFile, fieldnames=myFields)    
@@ -652,7 +649,10 @@ def write_to_csv(file_location, journal_list, csv_name):
 #Execute
 
 
-filename = 'journal.0012.txt'
+filename = 'journal.0010.txt'
+
+
+
 '''
 filename = 'journal.0012.txt'
 test = extract_info_commands(filename)[3]
@@ -674,7 +674,10 @@ print(test)
 
 
 journals = compile_journal_list('.')
-write_to_csv('.', journals, 'christian.csv')
+
+
+
+write_to_csv('.', journals, 'christian3.csv')
 
 
 
