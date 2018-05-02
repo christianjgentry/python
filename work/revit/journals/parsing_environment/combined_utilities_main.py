@@ -360,7 +360,7 @@ def extract_info_sync(filename):
 		if sync_count > 0:
 			sync_time_avg = sum(sync_times, timedelta()) / sync_count
 		elif sync_count == 0:
-			sync_time_avg = "0 sync times"
+			sync_time_avg = "no data"
 		
 		#get peak sync time
 		try:
