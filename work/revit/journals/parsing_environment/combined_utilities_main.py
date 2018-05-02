@@ -184,18 +184,26 @@ def extract_info_graphics(filename):
 	
 	gpu_info = ""
 	
+	try:
+		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
+			file_object = file_object.read()
+			file_object = file_object.lower().splitlines()
+			for line in file_object:
+				if "video card environment" in line:
+					values = re.findall('"([^"]*)"', line)
+					gpu_name = values[0]
 	
-	
-	with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
-		lines = file_object.readlines()
-		for i, line in enumerate(lines):
-			if re.search(r"video controller information", line.lower()):
-				for item in lines[max(i-0, 0):i+21]:
-					if item[5:] not in gpu_info:
-						gpu_info = gpu_info + item[5:]
+	except:
+		with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
+			lines = file_object.readlines()
+			for i, line in enumerate(lines):
+				if re.search(r"video controller information", line.lower()):
+					for item in lines[max(i-0, 0):i+21]:
+						if item[5:] not in gpu_info:
+							gpu_info = gpu_info + item[5:]
 
-		gpu_info = gpu_info.splitlines()
-		gpu_name = gpu_info[4].split(':')[1].strip().rstrip()
+			gpu_info = gpu_info.splitlines()
+			gpu_name = gpu_info[4].split(':')[1].strip().rstrip()
 	
 	return gpu_name
 		
@@ -295,6 +303,69 @@ def extract_info_ram(filename):
 	except:
 		print("***Could not gather RAM info from", filename, "***")
 
+
+def extract_info_sync(filename):
+	#import modules
+	from datetime import datetime
+	import codecs
+	
+	#create variables
+	sync_info = []
+	sync_count = 0
+	raw_times =[]
+	sync_times = []
+
+	with codecs.open(filename, 'r', encoding='utf-8', errors='ignore') as file_object:
+		lines = file_object.readlines()
+		
+		#Get sync times and append them to sync_info
+		for line in lines:
+			if "stc" in line.lower():
+				sub_line = line.lower()
+				sub_line = sub_line.split()
+				for word in sub_line:
+					if word == "<stc" or word == ">stc":
+						line = line.strip().rstrip()
+						sync_info.append(line)
+		
+		#extract usable time info from sync_info.
+		for item in sync_info:
+			pass
+			for sub_item in item.split():
+				try:
+					time = datetime.strptime(sub_item, '%H:%M:%S.%f')
+					raw_times.append(time)
+				except:
+					pass
+					
+		#Subtract times to gather total sync time per sync.
+		while len(raw_times) > 1:
+			total_time = raw_times[1] - raw_times[0]
+			sync_times.append(total_time)
+			del raw_times[0]
+			del raw_times[0]
+			
+		#Get sync_count
+		sync_count = len(sync_times)
+		
+		#get total sync time.
+		sync_time_total = "0:00:00.000"
+		sync_time_total = datetime.strptime(sync_time_total, '%H:%M:%S.%f')
+		for time in sync_times:
+			sync_time_total = time + sync_time_total
+		sync_time_total = sync_time_total.time()
+		
+		#get average sync time.
+		sync_time_avg = ""
+		
+		#get peak sync time
+		sync_time_peak = sorted(sync_times)
+		sync_time_peak = sync_time_peak[-1]
+		
+			
+	#return variables	
+	return sync_count, sync_time_total, sync_time_peak, sync_time_avg
+	
 
 def extract_info_commands(filename):
 	#parses journal for jrn commands.
@@ -480,6 +551,13 @@ def read_journal_data(file_location):
 			print("RAM Peak Session:", extract_info_ram(filename)[2], "GB")
 		except:
 			print("RAM FAILED")
+		#sync info
+		try:
+			print("Sync Count:", extract_info_sync(filename)[0])
+			print("Sync Time Total:", extract_info_sync(filename)[1])
+			print("Sync Time Peak:", extract_info_sync(filename)[2])
+		except:
+			print("SYNC FAILED")
 		#commands info
 		try:
 			print("Commands Total:", extract_info_commands(filename)[0])
@@ -556,6 +634,18 @@ def compile_journal_list(file_location):
 			except:
 				gpu_name = "error"
 			try:
+				sync_count = extract_info_sync(journals[count])[0]
+			except:
+				sync_count = "error"
+			try:
+				sync_time_total = extract_info_sync(journals[count])[1]
+			except:
+				sync_time_total = "error"
+			try:
+				sync_time_peak = extract_info_sync(journals[count])[2]
+			except:
+				sync_time_peak = "error"
+			try:
 				commands_total = extract_info_commands(journals[count])[0]
 			except:
 				commands_total = "error"
@@ -607,6 +697,9 @@ def compile_journal_list(file_location):
 				"ram_max" : ram_max,
 				"ram_avg" : ram_avg,
 				"ram_peak" : ram_peak,
+				"sync_count" : sync_count,
+				"sync_time_total" : sync_time_total,
+				"sync_time_peak" : sync_time_peak,
 				"commands_total" : commands_total,
 				"commands_hotkey_percentage" : commands_hotkey_percentage,
 				"commands_unique" : commands_unique,
@@ -634,6 +727,7 @@ def write_to_csv(file_location, journal_list, csv_name):
 			"date", "start_time", "end_time", "length_of_revit_session",
 			"os_version", "os_build", "revit_build", "revit_branch",
 			"cpu_name", "cpu_clockspeed", "gpu_name", "ram_max", "ram_avg", "ram_peak",
+			"sync_count", "sync_time_total", "sync_time_peak",
 			"commands_total", "commands_hotkey_percentage", "commands_unique",
 			"commands_dynamo", "commands_escape_key", "commands_most_used"]
 		writer = csv.DictWriter(myFile, fieldnames=myFields)    
@@ -674,10 +768,7 @@ print(test)
 
 
 journals = compile_journal_list('.')
-
-
-
-write_to_csv('.', journals, 'christian3.csv')
+write_to_csv('.', journals, 'christian5.csv')
 
 
 
@@ -685,3 +776,5 @@ write_to_csv('.', journals, 'christian3.csv')
 test = extract_info_commands(filename)[5]
 print(test)
 '''	
+
+#print_commands_ordered('.')
