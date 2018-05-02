@@ -307,6 +307,7 @@ def extract_info_ram(filename):
 def extract_info_sync(filename):
 	#import modules
 	from datetime import datetime
+	from datetime import timedelta
 	import codecs
 	
 	#create variables
@@ -356,11 +357,17 @@ def extract_info_sync(filename):
 		sync_time_total = sync_time_total.time()
 		
 		#get average sync time.
-		sync_time_avg = ""
+		if sync_count > 0:
+			sync_time_avg = sum(sync_times, timedelta()) / sync_count
+		elif sync_count == 0:
+			sync_time_avg = "0 sync times"
 		
 		#get peak sync time
-		sync_time_peak = sorted(sync_times)
-		sync_time_peak = sync_time_peak[-1]
+		try:
+			sync_time_peak = sorted(sync_times)
+			sync_time_peak = sync_time_peak[-1]
+		except:
+			sync_time_peak = "no data"
 		
 			
 	#return variables	
@@ -556,6 +563,8 @@ def read_journal_data(file_location):
 			print("Sync Count:", extract_info_sync(filename)[0])
 			print("Sync Time Total:", extract_info_sync(filename)[1])
 			print("Sync Time Peak:", extract_info_sync(filename)[2])
+			print("Sync Time Average:", extract_info_sync(filename)[3])
+			
 		except:
 			print("SYNC FAILED")
 		#commands info
@@ -646,6 +655,10 @@ def compile_journal_list(file_location):
 			except:
 				sync_time_peak = "error"
 			try:
+				sync_time_avg = extract_info_sync(journals[count])[3]
+			except:
+				sync_time_avg = "error"
+			try:
 				commands_total = extract_info_commands(journals[count])[0]
 			except:
 				commands_total = "error"
@@ -700,6 +713,7 @@ def compile_journal_list(file_location):
 				"sync_count" : sync_count,
 				"sync_time_total" : sync_time_total,
 				"sync_time_peak" : sync_time_peak,
+				"sync_time_avg" : sync_time_avg,
 				"commands_total" : commands_total,
 				"commands_hotkey_percentage" : commands_hotkey_percentage,
 				"commands_unique" : commands_unique,
@@ -727,7 +741,7 @@ def write_to_csv(file_location, journal_list, csv_name):
 			"date", "start_time", "end_time", "length_of_revit_session",
 			"os_version", "os_build", "revit_build", "revit_branch",
 			"cpu_name", "cpu_clockspeed", "gpu_name", "ram_max", "ram_avg", "ram_peak",
-			"sync_count", "sync_time_total", "sync_time_peak",
+			"sync_count", "sync_time_total", "sync_time_peak", "sync_time_avg",
 			"commands_total", "commands_hotkey_percentage", "commands_unique",
 			"commands_dynamo", "commands_escape_key", "commands_most_used"]
 		writer = csv.DictWriter(myFile, fieldnames=myFields)    
@@ -743,9 +757,11 @@ def write_to_csv(file_location, journal_list, csv_name):
 #Execute
 
 
-filename = 'journal.0010.txt'
+filename = 'journal.0028.txt'
 
+test = extract_info_sync(filename)[3]
 
+print(test)
 
 '''
 filename = 'journal.0012.txt'
@@ -766,10 +782,10 @@ print(test)
 
 #read_journal_data('.')
 
-
+'''
 journals = compile_journal_list('.')
 write_to_csv('.', journals, 'christian5.csv')
-
+'''
 
 
 '''
