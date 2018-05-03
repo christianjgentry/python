@@ -14,21 +14,22 @@ def LongestWord(sen):
 	#the longest word length is stored as an int.
 	longest_word = sorted(word_lengths)[-1]
 
-	#
+	#words that match the longest length are extracted.
 	flag = True
 	while flag == True:
 		for item in sen.split():
 			if len(item) == longest_word:
 				same_length.append(item)
 				flag = False
-				
+	
+	#The first longest word is assigned to a variable.			
 	sen = same_length[0]
 	return sen
 		
-# keep this function call here  
+#Execute
 print(LongestWord(input()))
 
 
-#I went to the movies yesterday and I will go to the movies again tomorrow
+#Example: I went to the movies yesterday and I will go to the movies again tomorrow
 
 
