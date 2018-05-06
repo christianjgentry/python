@@ -731,10 +731,15 @@ def compile_journal_list(file_location):
 	return (journals)
 
 
-def write_to_csv(file_location, journal_list, csv_name):
+def write_to_csv(journal_list):
 	#writes a list of journal dictionaries to a csv file.
 	import csv
-
+	
+	journal1 = cycle_journal_files('.')[0]
+	date_time = current_date_time()
+		
+	csv_name = str(extract_info_username(journal1)) + " " + str(date_time) + ".csv"
+	csv_name = 'C:\\Users\Christian Gentry\Desktop\%s' % csv_name
 	myFile = open(csv_name, 'w')  
 	with myFile:  
 		myFields = ["filename", "username", "project_name", "file_path",
@@ -746,51 +751,26 @@ def write_to_csv(file_location, journal_list, csv_name):
 			"commands_dynamo", "commands_escape_key", "commands_most_used"]
 		writer = csv.DictWriter(myFile, fieldnames=myFields)    
 		writer.writeheader()
-		for item in journals:
+		for item in journal_list:
 			try:
 				writer.writerow(item)
 			except:
 				print("error writing data to:", item)
 
 
+def current_date_time():
+	from datetime import datetime
+	
+	now = datetime.now()
+	now = now.strftime("%d-%m-%y %H_%M_%S")
+	
+	return now
+	
+
+	
+
 
 #Execute
-
-
-filename = 'journal.0028.txt'
-
-test = extract_info_sync(filename)[3]
-
-print(test)
-
-'''
-filename = 'journal.0012.txt'
-test = extract_info_commands(filename)[3]
-#test = create_dict_command_occurence(filename)
-for item in test:
-	print(item)
-sumval = sum(test.values())
-print(sumval)
-'''
-
-'''
-test = compile_journal_list('.')
-
-print(test)
-
-'''
-
-#read_journal_data('.')
-
-'''
 journals = compile_journal_list('.')
-write_to_csv('.', journals, 'christian5.csv')
-'''
+write_to_csv(journals)
 
-
-'''
-test = extract_info_commands(filename)[5]
-print(test)
-'''	
-
-#print_commands_ordered('.')
