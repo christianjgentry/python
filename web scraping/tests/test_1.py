@@ -2,13 +2,10 @@ from bs4 import BeautifulSoup
 
 import requests
 
-url = 'www.pythonforbeginners.com'
-
-r  = requests.get("http://" +url)
+r  = requests.get('https://darksouls.wiki.fextralife.com/Dark+Souls+Remastered')
 
 data = r.text
 
-soup = BeautifulSoup(data)
+soup = BeautifulSoup(data, "lxml")
 
-for link in soup.find_all('a'):
-    print(link.get('href'))
+print(soup.get_text())
