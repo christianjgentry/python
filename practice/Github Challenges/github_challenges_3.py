@@ -1,14 +1,24 @@
 '''
-Question 4
+Question 3
 Level 1
 
 Question:
-Write a program which accepts a sequence of comma-separated numbers from console and generate a list and a tuple which contains every number.
+With a given integral number n, write a program to generate a dictionary
+that contains (i, i*i) such that is an integral number between
+1 and n (both included). and then the program should print the dictionary.
 Suppose the following input is supplied to the program:
+8
+Then, the output should be:
+{1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64}
 '''
-numbers = "34,67,55,33,12,98"
 
-num_list = numbers.split(',')
-num_tuple = tuple(num_list)
-print(num_list, num_tuple)
+integer = input("Enter an integer value: ")
+dictionary = {}
+integer = int(integer)
+
+while integer > 0:
+	dictionary[integer] = integer ** 2
+	integer = integer - 1
+	
+print(dictionary)
 

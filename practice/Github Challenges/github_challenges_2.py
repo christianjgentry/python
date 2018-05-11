@@ -1,23 +1,33 @@
 '''
-Question 3
+Question 2
 Level 1
 
 Question:
-With a given integral number n, write a program to generate a dictionary
-that contains (i, i*i) such that is an integral number between
-1 and n (both included). and then the program should print the dictionary.
+Write a program which can compute the factorial of a given numbers.
+The results should be printed in a comma-separated sequence on a single line.
 Suppose the following input is supplied to the program:
 8
 Then, the output should be:
-{1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64}
+40320
 '''
 
-integer = input("Enter an integer value: ")
-dictionary = {}
-integer = int(integer)
+def FirstFactorial(num):
+	#calculate the factorial value of an integer. 
+    num = int(num)
+    factorial = num
+    
+    while num > 1:
+        factorial = factorial * (num - 1)
+        num = num - 1
+      
+    return factorial
+    
+    
+# Execute
+print(FirstFactorial(input("Enter an integer value:")))
 
-while integer > 0:
-	dictionary[integer] = integer ** 2
-	integer = integer - 1
-	
-print(dictionary)
+
+
+
+
+
