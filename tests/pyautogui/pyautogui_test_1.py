@@ -17,6 +17,7 @@ pyautogui.FAILSAFE = True
 print(pyautogui.size())
 
 
+pyautogui.hotkey('command', 'space')
 
 pyautogui.typewrite("safari", .3)
 
