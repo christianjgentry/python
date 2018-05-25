@@ -1,5 +1,6 @@
 #custom definitions to make data management with easier.
 #modules: pandas
+#cheat sheet: https://www.dataquest.io/blog/pandas-cheat-sheet/
 
 def read_file(file_path, skiprows=0):
     #reads an xls or csv file and returns it as a dataframe.
@@ -39,9 +40,6 @@ def dataframe_merge(dataframe_1, dataframe_2, merge_key):
     #merge dataframes together using common merge_key
     dataframe_merged = pd.merge(dataframe_1, dataframe_2, on=merge_key, how='outer')
     
-    #cull any duplicate rows under the merge_key category.
-    dataframe_merged = dataframe_cull_duplicates(dataframe_merged, merge_key)
-    
     #return the merged csv
     return dataframe_merged
 
@@ -68,14 +66,14 @@ def file_export(dataframe, file_path):
 
 ################################################################################    
 #EXECUTE
-_1 = '/Users/christian.gentry/Desktop/ncesdata_B99FF9AD.xlsx'
-_2 = '/Users/christian.gentry/Desktop/Texas School Districts_2.xlsx'
+_1 = '/Users/christian.gentry/Downloads/new/geocoded_schools_clean_data_1.csv'
+_2 = '/Users/christian.gentry/Downloads/new/ncesdata_B99FF9AD_condensed.xlsx'
 
-new = read_file(_1, skiprows=14)
+new = read_file(_1)
 old = read_file(_2)
 
-_3 = dataframe_merge(new, old, 'NCES District ID')
+_3 = dataframe_merge(new, old, 'input_string')
 
-file_export(_3, '/Users/christian.gentry/Desktop/export_test.xlsx')
+file_export(_3, '/Users/christian.gentry/Downloads/new/combined.csv')
 
 
