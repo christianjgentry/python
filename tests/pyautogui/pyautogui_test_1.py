@@ -13,7 +13,7 @@ pyautogui.press('enter')
 
 pyautogui.moveTo(334, 77)
 
-pyautogui.PAUSE = 2
+pyautogui.PAUSE = 10
 
 pyautogui.click()
 

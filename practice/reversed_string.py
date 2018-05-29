@@ -11,4 +11,13 @@ def FirstReverse(string):
 	return reverse
 
 # keep this function call here  
-print(FirstReverse(input("Type out a sentence or word to see it reversed!: ")))
+#print(FirstReverse(input("Type out a sentence or word to see it reversed!: ")))
+
+
+
+text = "abcdefg"
+
+print(text)
+
+
+print(text[::-1])
