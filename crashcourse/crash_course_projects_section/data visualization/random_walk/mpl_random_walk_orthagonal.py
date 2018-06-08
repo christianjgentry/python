@@ -53,3 +53,7 @@ class RandomWalk():
 			
 			self.x_values.append(next_x)
 			self.y_values.append(next_y)
+            
+use = RandomWalk
+
+use.fill_walk()
