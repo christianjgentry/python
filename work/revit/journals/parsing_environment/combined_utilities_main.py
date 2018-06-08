@@ -735,11 +735,11 @@ def write_to_csv(journal_list):
 	#writes a list of journal dictionaries to a csv file.
 	import csv
 	
-	journal1 = cycle_journal_files('.')[0]
+	journa1 = cycle_journal_files('.')[0]
 	date_time = current_date_time()
 		
-	csv_name = str(extract_info_username(journal1)) + " " + str(date_time) + ".csv"
-	csv_name = 'C:\\Users\Christian Gentry\Desktop\%s' % csv_name
+	csv_name = str(extract_info_username(journa1)) + " " + str(date_time) + ".csv"
+	csv_name = 'O:\\ArchTech\Design Technology\Admin\CSV\%s' % csv_name
 	myFile = open(csv_name, 'w')  
 	with myFile:  
 		myFields = ["filename", "username", "project_name", "file_path",
