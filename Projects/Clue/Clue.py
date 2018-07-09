@@ -13,13 +13,7 @@ weapons = ["dagger", "wrench", "revolver", "rope", "candlestick"]
 rooms = ["library", "kitchen", "study", "hall", "ballroom", "billiard room",
         "dining room"]
 
-#create players and add them to a list of players
-player1 = []
-player2 = []
-player3 = []
-player4 = []
 
-players = [player1, player2, player3, player4]
 ################################################################################
 #Definitions
 ################################################################################
@@ -40,7 +34,49 @@ def get_whodunnit():
     whodunnit = [random_suspect, random_weapon, random_room]
 
     return whodunnit
+    
 
+def how_many_players():
+    #Determine how many people are playing
+    
+    #create players and add them to a list of players
+    player1 = []
+    player2 = []
+    player3 = []
+    player4 = []
+    player5 = []
+    player6 = []
+    
+    player_flag = False
+    while player_flag == False:
+        
+        try:
+            number_of_players = int(input("How many people will be playing?\n" +
+                                    "2, 3, 4, 5, 6: "))
+        except:
+            print("Enter an integer value between 2 and 6!\n")
+            number_of_players = 0
+        
+        if number_of_players == 2:
+            players = [player1, player2]
+            player_flag = True
+        elif number_of_players == 3:
+            players = [player1, player2, player3]
+            player_flag = True
+        elif number_of_players == 4:
+            players = [player1, player2, player3, player4]
+            player_flag = True
+        elif number_of_players == 5:
+            players = [player1, player2, player3, player4, player5]
+            player_flag = True
+        elif number_of_players == 6:
+            players = [player1, player2, player3, player4, player5, player6]
+            player_flag = True
+        else:
+            print("2-6 players are required to play!\n")
+    
+    return players
+    
 
 def create_player_cardpool():
     #combine the remaining cards and then shuffle them into a new list.
@@ -80,14 +116,13 @@ def deal_cards(player_cards):
 ################################################################################
 #Execute
 ################################################################################ 
+players = how_many_players()
 whodunnit = get_whodunnit()
 player_cards = create_player_cardpool()
 
 deal_cards(player_cards)
-        
-print("Player1's cards:", player1)
-print("Player2's cards:", player2)
-print("Player3's cards:", player3)
-print("Player4's cards:", player4)
+
+for player in players:
+    print(player)
 
 print("Whodunnit?", whodunnit)
