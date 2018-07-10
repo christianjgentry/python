@@ -143,5 +143,52 @@ print(players[1].name + "'s hand:", players[1].hand)
 print(players[2].name + "'s hand:", players[2].hand)
 print(players[3].name + "'s hand:", players[3].hand)
 print(players[4].name + "'s hand:", players[4].hand)
-print(players[5].name + "'s hand:", players[5].hand)
+print(players[5].name + "'s hand:", players[5].hand, "\n\n")
 
+
+game_won = False
+game_quit = False
+while game_won == False:
+    for player in players:
+        turn_flag = False
+        while turn_flag == False:
+            print(player.name + "'s turn!")
+            print("Cards in hand:", player.hand, "\n")
+            print("What would", player.name, "like to do?\n" 
+                + "move to room/make accusation/declare whodunnit/pass\n")
+            turn_choice = input(":")
+            print("\n")
+            
+            if turn_choice == "move to room":
+                print("Moving to room\n")
+                turn_flag = True
+            elif turn_choice == "make accusation":
+                print("Making accusation\n")
+                turn_flag = True
+            elif turn_choice == "declare wdunnit":
+                print("Declaring whodunnit\n")
+                turn_flag = True
+            elif turn_choice == "pass":
+                print("Passing turn\n")
+                turn_flag = True
+            elif turn_choice == "quit":
+                game_quit = True
+                break
+            else:
+                print("Not a valid entry!!!\n")  
+                
+            if game_quit == True:
+                break
+        
+        if game_quit == True:
+            print("Game has been quit :(")
+            game_won = True
+            break
+            
+            
+        
+        
+        
+        
+        
+        
