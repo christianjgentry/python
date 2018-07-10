@@ -15,6 +15,17 @@ rooms = ["library", "kitchen", "study", "hall", "ballroom", "billiard room",
 
 
 ################################################################################
+#Classes
+################################################################################
+class Player():
+	#Creates a base framework for a game character.
+	def __init__(self, name):
+		#Character is initialized with base attributes.
+		self.name = name
+		self.hand = []
+
+
+################################################################################
 #Definitions
 ################################################################################
 def random_pull(my_list):
@@ -40,12 +51,12 @@ def how_many_players():
     #Determine how many people are playing
     
     #create players and add them to a list of players
-    player1 = []
-    player2 = []
-    player3 = []
-    player4 = []
-    player5 = []
-    player6 = []
+    player1 = Player("Player 1")
+    player2 = Player("Player 2")
+    player3 = Player("Player 3")
+    player4 = Player("Player 4")
+    player5 = Player("Player 5")
+    player6 = Player("Player 6")
     
     player_flag = False
     while player_flag == False:
@@ -104,7 +115,7 @@ def deal_cards(player_cards):
     while True:
         for player in players:
             if count < count_to:
-                player.append(player_cards.pop())
+                player.hand.append(player_cards.pop())
                 count += 1
             else:
                 break
@@ -116,6 +127,7 @@ def deal_cards(player_cards):
 ################################################################################
 #Execute
 ################################################################################ 
+
 players = how_many_players()
 whodunnit = get_whodunnit()
 player_cards = create_player_cardpool()
@@ -123,6 +135,13 @@ player_cards = create_player_cardpool()
 deal_cards(player_cards)
 
 for player in players:
-    print(player)
+    print(player.name, "has joined the game!")
 
 print("Whodunnit?", whodunnit)
+print(players[0].name + "'s hand:", players[0].hand)
+print(players[1].name + "'s hand:", players[1].hand)
+print(players[2].name + "'s hand:", players[2].hand)
+print(players[3].name + "'s hand:", players[3].hand)
+print(players[4].name + "'s hand:", players[4].hand)
+print(players[5].name + "'s hand:", players[5].hand)
+
